@@ -1,6 +1,7 @@
 package org.its.service.job;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.its.rest.controller.FleetController;
 import org.its.rest.controller.FleetController.FleetState;
@@ -38,8 +39,11 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 
 		@Override
 		public void write(List<? extends List<FleetState>> fleetStates) throws Exception {
-			fleetStates.forEach(fs -> {
-				System.out.println("fleet volume processed ");
+			fleetStates.forEach(fleetS -> {
+				fleetS.forEach(fs -> {
+					System.out.println("fleet volume processed: " + fs.getInstancesWithAttachedVolum().stream().collect( Collectors.joining( "," )));
+				});
+				
 			});
 
 		}
