@@ -4,6 +4,7 @@ package org.its.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.its.service.impl.TerraTemplateServiceImpl;
 import org.testng.annotations.Test;
@@ -27,7 +28,7 @@ class TerraTemplateServiceTest {
 		   
 		}};
 		
-		ttsi.replaceVariables("/tmp/terra2/variables.tf", 20, subnets, securityGroups, Optional.of("eds"), null, Optional.of("abc"));
+		ttsi.replaceVariables("/tmp/terra2/variables.tf", 20, subnets, securityGroups, Optional.of("eds"), null, Optional.of("abc"), UUID.randomUUID());
 	}
 
 }

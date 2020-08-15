@@ -9,7 +9,7 @@ public interface Ec2Service {
 
 	public List<Instance> getAllFleetInstances();
 	
-	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize);
+	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize, String muiltiAttachUUID);
 	
 	
 }

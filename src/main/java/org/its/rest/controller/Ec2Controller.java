@@ -2,6 +2,7 @@ package org.its.rest.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.its.service.Ec2Service;
@@ -30,7 +31,8 @@ public class Ec2Controller {
 	@PutMapping(value="attach")
 	public ResponseEntity<List<String>> attachMultiAttachVolumeToFleetInstances(int volSize){
 		if (volSize < 4) return ResponseEntity.ok(new ArrayList<String>()).badRequest().build(); 
-		List<String> list = ec2Service.attachVolumeToUnattachedFleetInstances(volSize).stream().map(ins -> ins.instanceId()).collect(Collectors.toList());
+		UUID uuid = UUID.randomUUID();
+		List<String> list = ec2Service.attachVolumeToUnattachedFleetInstances(volSize, uuid.toString()).stream().map(ins -> ins.instanceId()).collect(Collectors.toList());
 		return ResponseEntity.ok(list); 
 	}
 	

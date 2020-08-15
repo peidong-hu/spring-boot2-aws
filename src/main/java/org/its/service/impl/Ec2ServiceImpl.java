@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.assertj.core.util.Arrays;
 import org.its.service.Ec2Service;
+import org.jsoup.parser.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,9 +55,10 @@ public class Ec2ServiceImpl implements Ec2Service {
 	}
 
 	@Override
-	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize) {
+	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize, String muiltiAttachUUID) {
 
 		List<Instance> successAttachRequestedInstances = new ArrayList<Instance>();
+				
 		Arrays.asList(AVAILABLE_ZONES).forEach(az -> {
 			List<Instance> fleetInstances = new ArrayList<Instance>();
 			Filter filter = Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build();
@@ -66,9 +68,9 @@ public class Ec2ServiceImpl implements Ec2Service {
 				}
 			};
 			Filter filter2 = Filter.builder().name("availability-zone").values(azs).build();
-			Filter filter3 = Filter.builder().name("tag:aws:ec2launchtemplate:id").values("*").build();
+			//Filter filter3 = Filter.builder().name("tag:multi-attach-uuid").values(muiltiAttachUUID).build();
 
-			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder().filters(filter, filter2, filter3)
+			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder().filters(filter, filter2)
 					.build();
 
 			DescribeInstancesResponse response = ec2.describeInstances(bzoneRequest);
@@ -84,14 +86,18 @@ public class Ec2ServiceImpl implements Ec2Service {
 			fleetInstances.forEach(ins -> {
 				System.out.println(ins.instanceId());
 			});
+			//TODO to save resources, I am using 3 instead of 16 as the bucket size to run the demo
 			if (fleetInstances.size() >= 3) {
 				//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
 				//String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
 				for (int index = 0; index < 3; index++) {
-					String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
-					
-					if (isVolumeAvailable(volId) && attachMultiAttachVolume(volId, fleetInstances.get(index))) {
-						successAttachRequestedInstances.add(fleetInstances.get(index));
+					Instance inst = fleetInstances.get(index);
+					if (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1) {
+						String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
+						
+						if (isVolumeAvailable(volId) && attachMultiAttachVolume(volId, fleetInstances.get(index))) {
+							successAttachRequestedInstances.add(fleetInstances.get(index));
+						}
 					}
 				}
 			}

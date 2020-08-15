@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class TerraTemplateServiceImpl {
 	private static String CZONE_TOTAL_TAG = "CZONE-TOTAL";
 	private static String CZONE_SPOT_SIZE_TAG = "CZONE-SPOT-COUNT";
 	private static String CZONE_ONDEMAND_SIZE_TAG = "CZONE-ONDEMAND-COUNT";
+	private static String UUID_TAG = "MULTI-ATTACH-UUID";
 
 	// private static final String remoteUrl =
 	// "https://github.com/peidong-hu/Hygieia.git";
@@ -112,7 +114,7 @@ public class TerraTemplateServiceImpl {
 	}
 
 	public boolean replaceVariables(String variableFile, int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			Optional<String> instanceType, Optional<Integer> volSize, Optional<String> amiId) {
+			Optional<String> instanceType, Optional<Integer> volSize, Optional<String> amiId, UUID uuid) {
 		boolean retVal = true;
 		//TODO at this moment, one instance type supported
 		int eachInstanceTypeProvisionSize = calculateEachInstanceTypeProvisionTotal(1, numberOfNodes);
@@ -161,6 +163,8 @@ public class TerraTemplateServiceImpl {
 	        		line = "default = [" + concatStrings(parseCzoneSubnets(subnets, parseBzoneSubnets(subnets))) + "] #" + CZONE_SUBNETS_TAG;
 	        	} else if (line.contains(INSTANCE_TYPE_TAG) && instanceType.isPresent()) {
 	        		line = "default = \"" + instanceType.get() + "\" #" + INSTANCE_TYPE_TAG;
+	        	} else if (line.contains(UUID_TAG)) {
+	        		line = "default = \"" + uuid.toString() + "\" #" + UUID_TAG;
 	        	}
 	        	
 	            inputBuffer.append(line);

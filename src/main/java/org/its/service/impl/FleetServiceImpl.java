@@ -7,9 +7,13 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 
+
+import org.its.model.FleetParam;
+import org.its.rest.controller.FleetController.FleetState;
+import org.its.service.Ec2Service;
 import org.its.service.FleetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,20 +21,24 @@ import org.springframework.stereotype.Service;
 import com.microsoft.terraform.TerraformClient;
 import com.microsoft.terraform.TerraformOptions;
 
-import software.amazon.awssdk.services.ec2.Ec2Client;
 
 @Service
 public class FleetServiceImpl implements FleetService {
+	
+	
 	
 	private static String TERRAFORM_CODE_FOLDER = "/tmp/terra2/";
 	
 	private static String TERRAFORM_GIT_URL = "git@github.com:peidong-hu/terraform-ec2-fleet.git";
 	
+	
+	
+	
 	@Autowired
 	private JGitServiceImpl gitService;
 	
 	@Autowired
-	private Ec2Client ec2;
+	private Ec2Service ec2Service;
 	
 	@Autowired
 	private TerraTemplateServiceImpl terraTemplateService;
@@ -42,11 +50,11 @@ public class FleetServiceImpl implements FleetService {
 
 	}
 	
-	@Override
+	
 	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId) {
+			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId, UUID uuid) {
 		
-		if (gitService.getGitRepo(TERRAFORM_GIT_URL, TERRAFORM_CODE_FOLDER).isPresent() && terraTemplateService.replaceVariables(TERRAFORM_CODE_FOLDER + "variables.tf", numberOfNodes, subnets, securityGroups, instanceTypes, volSize, amiId)) {
+		if (gitService.getGitRepo(TERRAFORM_GIT_URL, TERRAFORM_CODE_FOLDER).isPresent() && terraTemplateService.replaceVariables(TERRAFORM_CODE_FOLDER + "variables.tf", numberOfNodes, subnets, securityGroups, instanceTypes, volSize, amiId, uuid)) {
 			
 			TerraformOptions options = new TerraformOptions();
 			
@@ -90,6 +98,19 @@ public class FleetServiceImpl implements FleetService {
 			
 		} 
 		return "failed";
+		
+	}
+
+	@Override
+	public String provision(FleetState fs) {
+		FleetParam fleetParam = fs.getFleetParam();
+		
+		return this.provision(fleetParam.getNumberOfNodes(),
+				fleetParam.getSubnets() == null ? new ArrayList<String>() : fleetParam.getSubnets(),
+				fleetParam.getSecurityGroups() == null ? new ArrayList<String>()
+						: fleetParam.getSecurityGroups(),
+				Optional.ofNullable(fleetParam.getInstanceType()), Optional.ofNullable(fleetParam.getVolSize()),
+				Optional.ofNullable(fleetParam.getAmiId()), fs.getFleetUUID());
 		
 	}
 
