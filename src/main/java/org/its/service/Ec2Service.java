@@ -7,7 +7,9 @@ import software.amazon.awssdk.services.ec2.model.Instance;
 
 public interface Ec2Service {
 
-	public List<Instance> getFleetInstances();
+	public List<Instance> getAllFleetInstances();
+	
+	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize);
 	
 	
 }

@@ -21,14 +21,207 @@ __Version__ : 0.1
 
 === Tags
 
+* ec-2-controller : Ec 2 Controller
+* fleet-controller : Fleet Controller
 * home-controller : Home Controller
-* person-controller : Person Controller
 
 
 
 
 [[_paths]]
 == Resources
+
+[[_ec-2-controller_resource]]
+=== Ec-2-controller
+Ec 2 Controller
+
+
+[[_getallfleetinstancesusingget]]
+==== getAllFleetInstances
+....
+GET /ec2FleetInstances
+....
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|< string > array
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/ec2FleetInstances
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+[ "string" ]
+----
+
+
+[[_attachmultiattachvolumetofleetinstancesusingget]]
+==== attachMultiAttachVolumeToFleetInstances
+....
+GET /ec2FleetInstances/attach
+....
+
+
+===== Parameters
+
+[options="header", cols=".^2,.^3,.^9,.^4"]
+|===
+|Type|Name|Description|Schema
+|**Query**|**volSize** +
+__optional__|volSize|integer (int32)
+|===
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|< string > array
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/ec2FleetInstances/attach
+----
+
+
+====== Request query
+[source,json]
+----
+{
+  "volSize" : 0
+}
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+[ "string" ]
+----
+
+
+[[_fleet-controller_resource]]
+=== Fleet-controller
+Fleet Controller
+
+
+[[_provisionusingpost]]
+==== provision
+....
+POST /ec2Fleet
+....
+
+
+===== Parameters
+
+[options="header", cols=".^2,.^3,.^9,.^4"]
+|===
+|Type|Name|Description|Schema
+|**Body**|**fleetParam** +
+`__required__`|fleetParam|<<_fleetparam,FleetParam>>
+|===
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|string
+|**201**|Created|No Content
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/ec2Fleet
+----
+
+
+====== Request body
+[source,json]
+----
+{
+  "numberOfNodes" : 0,
+  "subnets" : [ "string" ],
+  "securityGroups" : [ "string" ],
+  "instanceType" : "string",
+  "volSize" : 0,
+  "amiId" : "string"
+}
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+"string"
+----
+
 
 [[_home-controller_resource]]
 === Home-controller
@@ -81,272 +274,29 @@ GET /greeting
 ----
 
 
-[[_person-controller_resource]]
-=== Person-controller
-Person Controller
-
-
-[[_createpersonusingpost]]
-==== createPerson
-....
-POST /persons
-....
-
-
-===== Parameters
-
-[options="header", cols=".^2,.^3,.^9,.^4"]
-|===
-|Type|Name|Description|Schema
-|**Body**|**person** +
-`__required__`|person|<<_person,Person>>
-|===
-
-
-===== Responses
-
-[options="header", cols=".^2,.^14,.^4"]
-|===
-|HTTP Code|Description|Schema
-|**200**|OK|<<_person,Person>>
-|**201**|Created|No Content
-|**401**|Unauthorized|No Content
-|**403**|Forbidden|No Content
-|**404**|Not Found|No Content
-|===
-
-
-
-
-
-
-
-
-
-
-
-
-===== Example HTTP request
-
-====== Request path
-----
-/persons
-----
-
-
-====== Request body
-[source,json]
-----
-{
-  "dob" : "string",
-  "firstName" : "string",
-  "id" : 0,
-  "lastName" : "string"
-}
-----
-
-
-===== Example HTTP response
-
-====== Response 200
-[source,json]
-----
-{
-  "dob" : "string",
-  "firstName" : "string",
-  "id" : 0,
-  "lastName" : "string"
-}
-----
-
-
-[[_getallpersonsusingget]]
-==== getAllPersons
-....
-GET /persons
-....
-
-
-===== Responses
-
-[options="header", cols=".^2,.^14,.^4"]
-|===
-|HTTP Code|Description|Schema
-|**200**|OK|< <<_person,Person>> > array
-|**401**|Unauthorized|No Content
-|**403**|Forbidden|No Content
-|**404**|Not Found|No Content
-|===
-
-
-
-
-
-
-
-
-
-
-
-
-===== Example HTTP request
-
-====== Request path
-----
-/persons
-----
-
-
-===== Example HTTP response
-
-====== Response 200
-[source,json]
-----
-[ {
-  "dob" : "string",
-  "firstName" : "string",
-  "id" : 0,
-  "lastName" : "string"
-} ]
-----
-
-
-[[_getbypersonidusingget]]
-==== getByPersonId
-....
-GET /persons/{personId}
-....
-
-
-===== Parameters
-
-[options="header", cols=".^2,.^3,.^9,.^4"]
-|===
-|Type|Name|Description|Schema
-|**Path**|**personId** +
-`__required__`|personId|integer (int32)
-|===
-
-
-===== Responses
-
-[options="header", cols=".^2,.^14,.^4"]
-|===
-|HTTP Code|Description|Schema
-|**200**|OK|<<_person,Person>>
-|**401**|Unauthorized|No Content
-|**403**|Forbidden|No Content
-|**404**|Not Found|No Content
-|===
-
-
-
-
-
-
-
-
-
-
-
-
-===== Example HTTP request
-
-====== Request path
-----
-/persons/0
-----
-
-
-===== Example HTTP response
-
-====== Response 200
-[source,json]
-----
-{
-  "dob" : "string",
-  "firstName" : "string",
-  "id" : 0,
-  "lastName" : "string"
-}
-----
-
-
-[[_deletepersonusingdelete]]
-==== deletePerson
-....
-DELETE /persons/{personId}
-....
-
-
-===== Parameters
-
-[options="header", cols=".^2,.^3,.^9,.^4"]
-|===
-|Type|Name|Description|Schema
-|**Path**|**personId** +
-`__required__`|personId|integer (int32)
-|===
-
-
-===== Responses
-
-[options="header", cols=".^2,.^14,.^4"]
-|===
-|HTTP Code|Description|Schema
-|**200**|OK|integer (int32)
-|**204**|No Content|No Content
-|**401**|Unauthorized|No Content
-|**403**|Forbidden|No Content
-|===
-
-
-
-
-
-
-
-
-
-
-
-
-===== Example HTTP request
-
-====== Request path
-----
-/persons/0
-----
-
-
-===== Example HTTP response
-
-====== Response 200
-[source,json]
-----
-0
-----
-
-
 
 
 [[_definitions]]
 == Definitions
 
-[[_person]]
-=== Person
+[[_fleetparam]]
+=== FleetParam
 
 [options="header", cols=".^3,.^11,.^4"]
 |===
 |Name|Description|Schema
-|**dob** +
-__optional__|**Example** : `"string"`|string (date-time)
-|**firstName** +
+|**amiId** +
 __optional__|**Example** : `"string"`|string
-|**id** +
+|**instanceType** +
+__optional__|**Example** : `"string"`|string
+|**numberOfNodes** +
+`__required__`|**Example** : `0`|integer (int32)
+|**securityGroups** +
+__optional__|**Example** : `[ "string" ]`|< string > array
+|**subnets** +
+__optional__|**Example** : `[ "string" ]`|< string > array
+|**volSize** +
 __optional__|**Example** : `0`|integer (int32)
-|**lastName** +
-__optional__|**Example** : `"string"`|string
 |===
 
 

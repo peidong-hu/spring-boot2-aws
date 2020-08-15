@@ -5,15 +5,20 @@ import java.util.List;
 import io.swagger.annotations.ApiModelProperty;
 
 public class FleetParam {
-	@ApiModelProperty(required = true)
+	@ApiModelProperty(position = 1, required = true)
 	private Integer numberOfNodes;
 	
-	@ApiModelProperty(required = false)
+	@ApiModelProperty(position = 2, required = false)
 	private List<String> subnets;
-	@ApiModelProperty( required = false)
+	@ApiModelProperty(position = 3, required = false)
 	private List<String> securityGroups;
-	@ApiModelProperty( required = false)
+	@ApiModelProperty(position = 4, required = false)
 	private String instanceType;
+	@ApiModelProperty(position = 5, required = false)
+	private int volSize;
+	@ApiModelProperty(position = 6,required = false)
+	private String amiId;
+	
 	public String getInstanceType() {
 		return instanceType;
 	}
@@ -22,10 +27,7 @@ public class FleetParam {
 		this.instanceType = instanceType;
 	}
 
-	@ApiModelProperty( required = false)
-	private int volSize;
-	@ApiModelProperty(required = false)
-	private String amiId;
+	
 	
 	public Integer getNumberOfNodes() {
 		return numberOfNodes;
