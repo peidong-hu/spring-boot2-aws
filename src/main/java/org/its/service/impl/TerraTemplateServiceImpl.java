@@ -32,7 +32,9 @@ public class TerraTemplateServiceImpl {
 	// "https://github.com/peidong-hu/Hygieia.git";
 	private int calculateEachInstanceTypeProvisionTotal(int numberOfInstanceTypes, int numberOfNodes) {
 		int retVal = 0;
-		if (numberOfNodes > numberOfInstanceTypes) {
+		if (numberOfInstanceTypes == 0) {
+			retVal = numberOfNodes;
+		} else if (numberOfNodes > numberOfInstanceTypes) {
 			retVal = numberOfNodes/numberOfInstanceTypes;
 		}
 		return retVal;
@@ -88,7 +90,7 @@ public class TerraTemplateServiceImpl {
 		List<String> retVal = new ArrayList<String>();
 		if (subnets.size() > 1) {
 			for (int i = 0; i < subnets.size(); i++) {
-				if (i <= subnets.size() / 2)
+				if (i < subnets.size() / 2)
 					retVal.add(subnets.get(i));
 			}
 		} else {
@@ -114,6 +116,7 @@ public class TerraTemplateServiceImpl {
 			List<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId) {
 		boolean retVal = true;
 		int eachInstanceTypeProvisionSize = calculateEachInstanceTypeProvisionTotal(instanceTypes.size(), numberOfNodes);
+		if (eachInstanceTypeProvisionSize == 0) return false;
 		//int lastInstanceTypeProvisionSize = calculateLastInstanceTypeProvisionTotal(instanceTypes.size(), numberOfNodes);
 		
 		int eachInstanceTypeProvisionSpotSize = calculateEachInstanceTypeProvisionSpotSize(eachInstanceTypeProvisionSize);

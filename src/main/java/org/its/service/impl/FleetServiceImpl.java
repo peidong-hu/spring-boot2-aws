@@ -27,12 +27,16 @@ public class FleetServiceImpl implements FleetService {
 	
 	@Autowired
 	private Ec2Client ec2;
+	
+	@Autowired
+	private TerraTemplateServiceImpl terraTemplateService;
 
 	@Override
 	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			List<String> instanceType, Optional<Integer> volSize, Optional<String> amiId) {
+			List<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId) {
 		
-		if (gitService.getGitRepo(TERRAFORM_GIT_URL, TERRAFORM_CODE_FOLDER).isPresent()) {
+		if (gitService.getGitRepo(TERRAFORM_GIT_URL, TERRAFORM_CODE_FOLDER).isPresent() && terraTemplateService.replaceVariables(TERRAFORM_CODE_FOLDER + "variables.tf", numberOfNodes, subnets, securityGroups, instanceTypes, volSize, amiId)) {
+			
 			TerraformOptions options = new TerraformOptions();
 			
 			try (TerraformClient client = new TerraformClient(options)) {
@@ -41,7 +45,7 @@ public class FleetServiceImpl implements FleetService {
 
 			    client.setWorkingDirectory(new File(TERRAFORM_CODE_FOLDER));
 			    client.plan().get();
-			    client.apply().get();
+			    //client.apply().get();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
