@@ -22,7 +22,8 @@ public class FleetController {
 	public static class FleetState {
 		final private FleetParam fleetParam;
 		final private UUID fleetUUID;
-		private int numberOfVolumesAttached = 0;
+		
+		private final List<String> instancesWithAttachedVolum = new ArrayList<String>();
 		public FleetState(FleetParam param, UUID uuid) {
 			fleetParam = param;
 			fleetUUID = uuid;
@@ -39,13 +40,11 @@ public class FleetController {
 		}
 
 
-		public int getNumberOfVolumesAttached() {
-			return numberOfVolumesAttached;
-		}
+		
 
 
-		public void setNumberOfVolumesAttached(int numberOfVolumesAttached) {
-			this.numberOfVolumesAttached = numberOfVolumesAttached;
+		public List<String> getInstancesWithAttachedVolum() {
+			return instancesWithAttachedVolum;
 		}
 
 		

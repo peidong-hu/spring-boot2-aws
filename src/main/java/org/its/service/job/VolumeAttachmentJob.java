@@ -25,23 +25,23 @@ import org.springframework.stereotype.Component;
 public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 	public class Reader implements ItemReader<List<FleetState>> {
 
-
 		@Override
-		public List<FleetState> read() throws Exception, UnexpectedInputException,
-				ParseException, NonTransientResourceException {
+		public List<FleetState> read()
+				throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 
-			
-				return FleetController.fleets;
-			
+			return FleetController.fleets;
+
 		}
 	}
+
 	public class Writer implements ItemWriter<List<FleetState>> {
 
 		@Override
-		public void write(List<? extends List<FleetState>> messages) throws Exception {
-			 
-				System.out.println("Writing the data ");
-			 
+		public void write(List<? extends List<FleetState>> fleetStates) throws Exception {
+			fleetStates.forEach(fs -> {
+				System.out.println("fleet volume processed ");
+			});
+
 		}
 
 	}
@@ -52,16 +52,12 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 	@Autowired
 	StepBuilderFactory stepBuilderFactory;
 
-	 
-
 	@Autowired
 	Processor processor;
 
-	 
-
 	@Bean(name = "volumeJob")
 	public Job accountKeeperJob() {
-		
+
 		Step step = stepBuilderFactory.get("step-1").<List<FleetState>, List<FleetState>>chunk(1).reader(new Reader())
 				.processor(processor).writer(new Writer()).build();
 

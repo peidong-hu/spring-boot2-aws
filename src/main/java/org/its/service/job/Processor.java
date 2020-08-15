@@ -1,6 +1,7 @@
 package org.its.service.job;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.its.rest.controller.FleetController.FleetState;
 import org.its.service.Ec2Service;
@@ -16,11 +17,11 @@ public class Processor implements ItemProcessor<List<FleetState>, List<FleetStat
 
 	@Override
 	public List<FleetState> process(List<FleetState> fleetStates) throws Exception {
-		fleetStates.stream().filter(fs -> fs.getFleetParam().getNumberOfNodes() != fs.getNumberOfVolumesAttached())
+		fleetStates.stream().filter(fs -> fs.getFleetParam().getNumberOfNodes() != fs.getInstancesWithAttachedVolum().size())
 				.forEach(fs -> {
-					fs.setNumberOfVolumesAttached(fs.getNumberOfVolumesAttached()
-							+ ec2Service.attachVolumeToUnattachedFleetInstances(fs.getFleetParam().getVolSize(),
-									fs.getFleetUUID().toString()).size());
+					fs.getInstancesWithAttachedVolum().addAll(
+							ec2Service.attachVolumeToUnattachedFleetInstances(fs.getFleetParam().getVolSize(),
+									fs.getFleetUUID().toString()).stream().map(inst->inst.instanceId()).collect(Collectors.toList()));
 				});
 
 		return fleetStates;
