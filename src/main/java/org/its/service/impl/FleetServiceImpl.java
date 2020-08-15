@@ -44,7 +44,7 @@ public class FleetServiceImpl implements FleetService {
 	
 	@Override
 	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			List<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId) {
+			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId) {
 		
 		if (gitService.getGitRepo(TERRAFORM_GIT_URL, TERRAFORM_CODE_FOLDER).isPresent() && terraTemplateService.replaceVariables(TERRAFORM_CODE_FOLDER + "variables.tf", numberOfNodes, subnets, securityGroups, instanceTypes, volSize, amiId)) {
 			

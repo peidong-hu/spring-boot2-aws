@@ -27,7 +27,7 @@ class TerraTemplateServiceTest {
 		   
 		}};
 		
-		ttsi.replaceVariables("/tmp/terra2/variables.tf", 20, subnets, securityGroups, insTypes, null, Optional.of("abc"));
+		ttsi.replaceVariables("/tmp/terra2/variables.tf", 20, subnets, securityGroups, Optional.of("eds"), null, Optional.of("abc"));
 	}
 
 }

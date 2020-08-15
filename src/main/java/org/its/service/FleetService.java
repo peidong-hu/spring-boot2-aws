@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface FleetService {
 
-	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups, List<String> instanceType, Optional<Integer> volSize, Optional<String> amiId);
+	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups, Optional<String> instanceType, Optional<Integer> volSize, Optional<String> amiId);
 	
 	
 }

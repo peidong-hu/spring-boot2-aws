@@ -13,7 +13,15 @@ public class FleetParam {
 	@ApiModelProperty( required = false)
 	private List<String> securityGroups;
 	@ApiModelProperty( required = false)
-	private List<String> instanceTypes;
+	private String instanceType;
+	public String getInstanceType() {
+		return instanceType;
+	}
+
+	public void setInstanceType(String instanceType) {
+		this.instanceType = instanceType;
+	}
+
 	@ApiModelProperty( required = false)
 	private int volSize;
 	@ApiModelProperty(required = false)
@@ -43,13 +51,7 @@ public class FleetParam {
 		this.securityGroups = securityGroups;
 	}
 
-	public List<String> getInstanceTypes() {
-		return instanceTypes;
-	}
-
-	public void setInstanceTypes(List<String> instanceTypes) {
-		this.instanceTypes = instanceTypes;
-	}
+	 
 
 	public int getVolSize() {
 		return volSize;

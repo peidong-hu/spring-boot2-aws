@@ -112,10 +112,12 @@ public class TerraTemplateServiceImpl {
 	}
 
 	public boolean replaceVariables(String variableFile, int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			List<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId) {
+			Optional<String> instanceType, Optional<Integer> volSize, Optional<String> amiId) {
 		boolean retVal = true;
-		int eachInstanceTypeProvisionSize = calculateEachInstanceTypeProvisionTotal(instanceTypes.size(), numberOfNodes);
+		//TODO at this moment, one instance type supported
+		int eachInstanceTypeProvisionSize = calculateEachInstanceTypeProvisionTotal(1, numberOfNodes);
 		if (eachInstanceTypeProvisionSize == 0) return false;
+		
 		//int lastInstanceTypeProvisionSize = calculateLastInstanceTypeProvisionTotal(instanceTypes.size(), numberOfNodes);
 		
 		int eachInstanceTypeProvisionSpotSize = calculateEachInstanceTypeProvisionSpotSize(eachInstanceTypeProvisionSize);
@@ -157,6 +159,8 @@ public class TerraTemplateServiceImpl {
 	        	} else if (line.contains(CZONE_SUBNETS_TAG) && subnets.size()>0) {
 	        		
 	        		line = "default = [" + concatStrings(parseCzoneSubnets(subnets, parseBzoneSubnets(subnets))) + "] #" + CZONE_SUBNETS_TAG;
+	        	} else if (line.contains(INSTANCE_TYPE_TAG) && instanceType.isPresent()) {
+	        		line = "default = \"" + instanceType.get() + "\" #" + INSTANCE_TYPE_TAG;
 	        	}
 	        	
 	            inputBuffer.append(line);
