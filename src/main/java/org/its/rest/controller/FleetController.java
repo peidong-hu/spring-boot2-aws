@@ -24,7 +24,8 @@ public class FleetController {
 	@PostMapping
 	public ResponseEntity<String> provision(@Valid @RequestBody FleetParam fleetParam) {
 
-		return ResponseEntity.ok(fleetService.provision(fleetParam.getNumberOfNodes(), fleetParam.getSubnets() == null? new ArrayList<String>(): fleetParam.getSubnets(),
+		return ResponseEntity.ok().header("Content-Type", "text/html")
+		        .body(fleetService.provision(fleetParam.getNumberOfNodes(), fleetParam.getSubnets() == null? new ArrayList<String>(): fleetParam.getSubnets(),
 				fleetParam.getSecurityGroups() == null? new ArrayList<String>():fleetParam.getSecurityGroups(), fleetParam.getInstanceTypes() == null? new ArrayList<String>() : fleetParam.getInstanceTypes(),
 				Optional.ofNullable(fleetParam.getVolSize()), Optional.ofNullable(fleetParam.getAmiId())));
 	}
