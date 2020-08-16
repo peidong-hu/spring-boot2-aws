@@ -23,7 +23,6 @@ import software.amazon.awssdk.services.ec2.model.DescribeVolumesRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeVolumesResponse;
 import software.amazon.awssdk.services.ec2.model.Instance;
 import software.amazon.awssdk.services.ec2.model.Reservation;
-import software.amazon.awssdk.services.ec2.model.Subnet;
 import software.amazon.awssdk.services.ec2.model.Filter;
 import software.amazon.awssdk.services.ec2.model.VolumeState;
 import software.amazon.awssdk.services.ec2.model.VolumeType;
@@ -35,6 +34,7 @@ public class Ec2ServiceImpl implements Ec2Service {
 	public static final String MULTI_ATTACH_TAG_NAME = "multiVolAttached";
 	public static final String DEVICE_NAME = "/dev/sdf";
 	public static final String FLEET_TAG_NAME = "aws:ec2:fleet-id";
+	public static final int VOLUME_JOB_TRIGGER_THRESHOLD = 4;
 
 	@Autowired
 	private Ec2Client ec2;
@@ -44,9 +44,7 @@ public class Ec2ServiceImpl implements Ec2Service {
 		List<Instance> fleetInstances = new ArrayList<Instance>();
 
 		DescribeInstancesRequest request = DescribeInstancesRequest.builder()
-				.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build()).build();
-		// DescribeInstancesRequest request =
-		// DescribeInstancesRequest.builder().maxResults(6).build();
+				.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build()).build(); 
 
 		DescribeInstancesResponse response = ec2.describeInstances(request);
 
@@ -71,7 +69,7 @@ public class Ec2ServiceImpl implements Ec2Service {
 				}
 			};
 			Filter filter2 = Filter.builder().name("availability-zone").values(azs).build();
-			//Filter filter3 = Filter.builder().name("tag:multi-attach-uuid").values(muiltiAttachUUID).build();
+			
 
 			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder().filters(filter, filter2)
 					.build();
@@ -90,10 +88,10 @@ public class Ec2ServiceImpl implements Ec2Service {
 //				System.out.println(ins.instanceId());
 //			});
 			//TODO to save resources, I am using 3 instead of 16 as the bucket size to run the demo
-			if (fleetInstances.size() >= 3) {
+			if (fleetInstances.size() >= VOLUME_JOB_TRIGGER_THRESHOLD) {
 				//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
 				//String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
-				for (int index = 0; index < 3; index++) {
+				for (int index = 0; index < VOLUME_JOB_TRIGGER_THRESHOLD; index++) {
 					Instance inst = fleetInstances.get(index);
 					if (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1) {
 						String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.its.rest.controller.FleetController;
 import org.its.rest.controller.FleetController.FleetState;
 import org.its.service.Ec2Service;
+import org.its.service.impl.Ec2ServiceImpl;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -44,11 +45,11 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 			int totalMounted = FleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getInstancesWithAttachedVolum().size()).collect(Collectors.summingInt(it->it.intValue()));
 			if (FleetController.fleets.stream().filter(fl->!fl.isDryRun())
 					.filter(fs -> fs.getFleetParam().getNumberOfNodes() != fs.getInstancesWithAttachedVolum().size())
-					.count() == 0 || total - totalMounted < 16) {
+					.count() == 0 || total - totalMounted < Ec2ServiceImpl.VOLUME_JOB_TRIGGER_THRESHOLD) {
 				return null;
 			} else {
 				long running = ec2Service.getAllFleetInstances().stream().filter(ins->ins.state().name() == InstanceStateName.RUNNING).count();
-				if ( running > 16)
+				if ( running > Ec2ServiceImpl.VOLUME_JOB_TRIGGER_THRESHOLD)
 					return FleetController.fleets;
 				else
 					return null;
