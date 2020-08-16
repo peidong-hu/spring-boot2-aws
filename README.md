@@ -19,15 +19,10 @@
 ##### 7. The fleet POST api accepts the following parameters through a json object, 
 
     num_nodes: (required); Integer. Used to specify the total number of nodes needed.
-
     subnets: (optional); Array. Used to specify the subnet ids to be used with a minimum of 2 subnets. Default value is ["subnet-d3c3b7a9", "subnet-9ef12ed2"]
-
     security_groups: (optional); Array. Used to specify the security groups applied to the provisioned ec2 instance, with a minimum of 1 security group. Default value is ["sg-9301b6fd"]
-
     instances_types: (optional); Array. Used to to specify the ec2 instances types to use. Defaults to t3.micro.
-
     multi_attach_vol_size: (optional); Integer. Used to specify the size in GB of the shared IO1 vol. Defaults to 4GB! (AWS access min 4GB for IO1 volume, can't be set to 3GB as default)
-
     ami_id: (optional); String. Used to specify the AMI used for the nodes. Defaults to Ubuntu 18.04 server
 
 ## Design and implementation
