@@ -31,7 +31,7 @@ import software.amazon.awssdk.services.ec2.model.VolumeType;
 public class Ec2ServiceImpl implements Ec2Service {
 	public static final String[] AVAILABLE_ZONES = { "us-east-2b", "us-east-2c" };
 	public static final int DEFAULT_VOL_SIZE = 3;
-	public static final String MULTI_ATTACH_TAG_NAME = "multiVolAttached";
+	public static final String MULTI_ATTACH_TAG_NAME = "multiVolAttach";
 	public static final String DEVICE_NAME = "/dev/sdf";
 	public static final String FLEET_TAG_NAME = "aws:ec2:fleet-id";
 	public static final int VOLUME_JOB_TRIGGER_THRESHOLD = 4;
@@ -69,9 +69,10 @@ public class Ec2ServiceImpl implements Ec2Service {
 				}
 			};
 			Filter filter2 = Filter.builder().name("availability-zone").values(azs).build();
-			
+			Filter filter3 = Filter.builder().name("instance-state-name").values("running").build();
+			Filter filter4 = Filter.builder().name("tag:" + MULTI_ATTACH_TAG_NAME).values(muiltiAttachUUID).build();
 
-			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder().filters(filter, filter2)
+			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder().filters(filter, filter2, filter3, filter4)
 					.build();
 
 			DescribeInstancesResponse response = ec2.describeInstances(bzoneRequest);
@@ -91,7 +92,7 @@ public class Ec2ServiceImpl implements Ec2Service {
 			if (fleetInstances.size() >= VOLUME_JOB_TRIGGER_THRESHOLD) {
 				//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
 				//String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
-				for (int index = 0; index < VOLUME_JOB_TRIGGER_THRESHOLD; index++) {
+				for (int index = 0; index < fleetInstances.size(); index++) {
 					Instance inst = fleetInstances.get(index);
 					if (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1) {
 						String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
