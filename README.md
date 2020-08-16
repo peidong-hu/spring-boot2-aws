@@ -61,9 +61,9 @@ Click on the link to access live demo running on AWS cloud
 
     Ask Peidong for the basic auth username/password
 
-    [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Live Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
+    [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html)
 
 Click on the link to access the swagger ui when run locally
 
-    [Local Swagger-UI](http://localhost:7772/swagger-ui.html "Swagger-UI") http://localhost:7773/swagger-ui.html
+    [Local Swagger-UI](http://localhost:7772/swagger-ui.html)
 
