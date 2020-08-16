@@ -71,7 +71,7 @@ public class FleetParamValidationServiceImpl {
 				}
 			}
 		}
-		if (fleetParam.getSecurityGroups().size() > 0) {
+		if (fleetParam.getSecurityGroups() != null && fleetParam.getSecurityGroups().size() > 0) {
 			// List<Filter> sgFilters = new ArrayList<Filter>();
 			// fleetParam.getSecurityGroups().forEach(sg -> {
 			// sgFilters.add(Filter.builder().name("group-id").values(sg).build());
@@ -88,7 +88,7 @@ public class FleetParamValidationServiceImpl {
 			});
 
 		}
-		if (fleetParam.getSubnets().size() > 0) {
+		if (fleetParam.getSubnets() != null && fleetParam.getSubnets().size() > 0) {
 			// List<Filter> sgFilters = new ArrayList<Filter>();
 			// fleetParam.getSubnets().forEach(sg -> {
 			// sgFilters.add(Filter.builder().name("subnet-id").values(sg).build());

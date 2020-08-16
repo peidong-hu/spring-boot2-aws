@@ -106,6 +106,8 @@ public class TerraTemplateServiceImpl {
 	public boolean replaceVariables(String variableFile, int numberOfNodes, List<String> subnets, List<String> securityGroups,
 			Optional<String> instanceType, Optional<Integer> volSize, Optional<String> amiId, UUID uuid) {
 		boolean retVal = true;
+		List<String> bZoneSubnetIds = parseBzoneSubnets(subnets);
+		List<String> cZoneSubnetIds = parseCzoneSubnets(subnets, bZoneSubnetIds);
 		//TODO at this moment, one instance type supported
 		int eachInstanceTypeProvisionSize = calculateEachInstanceTypeProvisionTotal(1, numberOfNodes);
 		if (eachInstanceTypeProvisionSize == 0) return false;
@@ -144,13 +146,13 @@ public class TerraTemplateServiceImpl {
 	        		line = "  default = \"" + (amiId.get())+ "\" #" + AMI_ID_TAG;
 	        	} else if (line.contains(SECURITY_GROUPS_TAG) && securityGroups.size()>0) {
 	        		line = "  default = [" + concatStrings(securityGroups) + "] #" + SECURITY_GROUPS_TAG;
-	        	} else if (line.contains(BZONE_SUBNETS_TAG) && subnets.size()>0) {
+	        	} else if (line.contains(BZONE_SUBNETS_TAG) && bZoneSubnetIds.size()>0) {
 	        		
-	        		line = "  default = [" + concatStrings(parseBzoneSubnets(subnets)) + "] #" + BZONE_SUBNETS_TAG;
+	        		line = "  default = [" + concatStrings(bZoneSubnetIds) + "] #" + BZONE_SUBNETS_TAG;
 	        		
-	        	} else if (line.contains(CZONE_SUBNETS_TAG) && subnets.size()>0) {
+	        	} else if (line.contains(CZONE_SUBNETS_TAG) && cZoneSubnetIds.size()>0) {
 	        		
-	        		line = "default = [" + concatStrings(parseCzoneSubnets(subnets, parseBzoneSubnets(subnets))) + "] #" + CZONE_SUBNETS_TAG;
+	        		line = "default = [" + concatStrings(cZoneSubnetIds) + "] #" + CZONE_SUBNETS_TAG;
 	        	} else if (line.contains(INSTANCE_TYPE_TAG) && instanceType.isPresent()) {
 	        		line = "default = \"" + instanceType.get() + "\" #" + INSTANCE_TYPE_TAG;
 	        	} else if (line.contains(UUID_TAG)) {

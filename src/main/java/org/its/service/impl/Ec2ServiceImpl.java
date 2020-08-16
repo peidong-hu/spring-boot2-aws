@@ -30,7 +30,7 @@ import software.amazon.awssdk.services.ec2.model.VolumeType;
 @Service
 public class Ec2ServiceImpl implements Ec2Service {
 	public static final String[] AVAILABLE_ZONES = { "us-east-2b", "us-east-2c" };
-	public static final int DEFAULT_VOL_SIZE = 3;
+	public static final int DEFAULT_VOL_SIZE = 4; //TODO Cant be 3 since the min size required by aws is 4 for io1
 	public static final String MULTI_ATTACH_TAG_NAME = "multiVolAttach";
 	public static final String DEVICE_NAME = "/dev/sdf";
 	public static final String FLEET_TAG_NAME = "aws:ec2:fleet-id";
