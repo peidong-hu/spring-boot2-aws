@@ -38,17 +38,12 @@
 
 ## Missing bonus features
 
-##### Implement receiving the parameters using command line options and env vars.
-
-##### Provide more unit tests for the code. 
-
-##### Allow the tool to use an external data store to allow for recovering from undesired interruptions.
-
-##### Split the tool into a command line client and a daemon.
-
-##### Implement a simple shell command line client using curl to call this api
-
-##### Convert this restful service to a serverless restful API using API Gateway and Lambda or Openfaas in Kubernetes.
+    1. Implement receiving the parameters using command line options and env vars.
+    2. Provide more unit tests for the code. 
+    3. Allow the tool to use an external data store to allow for recovering from undesired interruptions.
+    4. Split the tool into a command line client and a daemon.
+    5. Implement a simple shell command line client using curl to call this api
+    6. Convert this restful service to a serverless restful API using API Gateway and Lambda or Openfaas in Kubernetes.
 
 
 ## Build Project
