@@ -13,9 +13,13 @@
 	mvn spring-boot:run
 
 ##### Testing the API using swagger
-Click on the link to access the swagger ui.
+Click on the link to access live demo running on AWS cloud, ask Peidong for the basic auth username/password
 
-[Swagger-UI](http://localhost:7772/spring-boot2/swagger-ui.html "Swagger-UI") http://localhost:7772/spring-boot2/swagger-ui.html
+[Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
+
+Click on the link to access the swagger ui when run locally
+
+[Swagger-UI](http://localhost:7772/swagger-ui.html "Swagger-UI") http://localhost:7772/swagger-ui.html
 
 ### Creating static API Documentation
 To create static document in pdf and html format, Run following command
