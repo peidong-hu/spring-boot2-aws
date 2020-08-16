@@ -14,7 +14,7 @@
 
 ##### 5. The bucket of 16 instances for each batch job processing will possibly leave some instances never been volume attached if the user gives volume size in api call which requires this user's instances can only attached with certain size volume. For this requirement of the feature needs to be give more specific instructions for how to deal with this case. Right now, the bucket size is set as 1, so all the instances will be guaranteed attached with a volume. 
 
-##### 6. Swagger-UI provides GUI web interface to let user try the api online demo at (Obtain basic auth username/password from Peidong Hu), [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html 
+##### 6. Swagger-UI provides GUI web interface to let user try the api online demo at (Obtain basic auth username/password from Peidong Hu), [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html. Sample payload json file can be obtained here, [Sample api payload](https://raw.githubusercontent.com/peidong-hu/spring-boot2-aws/master/src/main/resources/payload.json)
 
 ##### 7. The fleet POST api accepts the following parameters through a json object, 
 
