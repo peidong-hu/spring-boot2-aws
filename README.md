@@ -1,4 +1,4 @@
-# Restful API with Swagger-UI to Manage AWS Ec2 Fleet Built on Springboot2 in Java 8
+# Restful API Service with Swagger-UI to Manage AWS Ec2 Fleet instances, Built on Springboot2 in Java 8
 
 ## Features
 
@@ -29,6 +29,15 @@
     multi_attach_vol_size: (optional); Integer. Used to specify the size in GB of the shared IO1 vol. Defaults to 4GB! (AWS access min 4GB for IO1 volume, can't be set to 3GB as default)
 
     ami_id: (optional); String. Used to specify the AMI used for the nodes. Defaults to Ubuntu 18.04 server
+
+## Design and implementation
+
+##### This service follows typical Springboot RESTFUL service design which include, Swagger-ui as the view, Controller as the api endpoint control, Service as the component handling business logic and Model as the entity modeling layer. These are the java packages which represent each layer,
+    1. package org.its.rest.controller (api endpoint control layer)
+    2. package org.its.service (service layer)
+    3. package org.its.model (entity model layer)
+    4. package org.its.service.job (backend job which periodically create/attach volumes to instances)
+    5. package org.its.config (help spring to configure/wiring component/service/controller)
 
 ## Missing bonus features
 
