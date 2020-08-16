@@ -2,19 +2,19 @@
 
 ## Features
 
-#### 1. Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment
+##### 1. Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment
 
-#### 2. Provisioned EC2 fleets have 80% spot and 20% on-demand instances
+##### 2. Provisioned EC2 fleets have 80% spot and 20% on-demand instances
 
-#### 3. Provisioned EC2 fleets span at least 2 AZ, 'us-east-2b' and 'us-east-2c'
+##### 3. Provisioned EC2 fleets span at least 2 AZ, 'us-east-2b' and 'us-east-2c'
 
-#### 4. Background batch job runs every 30 seconds to provision a non-multi-attach IO1 vol and attach it to instances. (Multi-attach IO1 vol is not supported in 'us-east-2b' and 'us-east-2c', and multi-attach volmes need special type of instances to test. Currently not implemented in the code.
+##### 4. Background batch job runs every 30 seconds to provision a non-multi-attach IO1 vol and attach it to instances. (Multi-attach IO1 vol is not supported in 'us-east-2b' and 'us-east-2c', and multi-attach volmes need special type of instances to test. Currently not implemented in the code.
 
-#### 5. The bucket of 16 instances for each batch job processing will possibly leave some instances never been volume attached if the user gives volume size in api call which requires this user's instances can only attached with certain size volume. For this requirement of the feature needs to be give more specific instructions for how to deal with this case. Right now, the bucket size is set as 1, so all the instances will be guaranteed attached with a volume. 
+##### 5. The bucket of 16 instances for each batch job processing will possibly leave some instances never been volume attached if the user gives volume size in api call which requires this user's instances can only attached with certain size volume. For this requirement of the feature needs to be give more specific instructions for how to deal with this case. Right now, the bucket size is set as 1, so all the instances will be guaranteed attached with a volume. 
 
-#### 6. Swagger-UI provides GUI web interface to let user try the api online demo at, [Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
+##### 6. Swagger-UI provides GUI web interface to let user try the api online demo at, [Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
 
-#### 7. The fleet POST api accepts the following parameters through a json object, 
+##### 7. The fleet POST api accepts the following parameters through a json object, 
 
     num_nodes: (required); Integer. Used to specify the total number of nodes needed.
 
