@@ -2,9 +2,9 @@
 
 ## Features
 
-### Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment
+### 1. Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment
 
-### Provisioned EC2 fleets have 80% spot and 20% on-demand instances
+### 2. Provisioned EC2 fleets have 80% spot and 20% on-demand instances
 
 ### Provisioned EC2 fleets span at least 2 AZ, 'us-east-2b' and 'us-east-2c'
 
