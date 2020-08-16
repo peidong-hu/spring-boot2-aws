@@ -1,10 +1,10 @@
-# Restful API Service with Swagger-UI to Manage AWS Ec2 Fleet instances, Built on Springboot2 in Java 8
+# Restful API Service with Swagger-UI to Manage AWS Ec2 Fleet instances. 
 
 ## Features
 
 ##### 0. Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment. 
 
-##### 1. Dry-run as default option in fleet POST api call, user can inspect the terraform plan result in api response to decide if will issue a wet-run.
+##### 1. Dry-run as default option in fleet POST api call, user can inspect the Terraform plan result in api response to decide if will issue a wet-run.
 
 ##### 2. Provisioned EC2 fleets have 80% spot and 20% on-demand instances
 
@@ -14,7 +14,7 @@
 
 ##### 5. The bucket of 16 instances for each batch job processing will possibly leave some instances never been volume attached if the user gives volume size in api call which requires this user's instances can only attached with certain size volume. For this requirement of the feature needs to be give more specific instructions for how to deal with this case. Right now, the bucket size is set as 1, so all the instances will be guaranteed attached with a volume. 
 
-##### 6. Swagger-UI provides GUI web interface to let user try the api online demo at, [Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html (Obtain basic auth username/password from Peidong Hu)
+##### 6. Swagger-UI provides GUI web interface to let user try the api online demo at, [Online Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html (Obtain basic auth username/password from Peidong Hu)
 
 ##### 7. The fleet POST api accepts the following parameters through a json object, 
 
@@ -62,30 +62,13 @@
 	mvn spring-boot:run
 
 ##### Testing the API using swagger
-Click on the link to access live demo running on AWS cloud, ask Peidong for the basic auth username/password
+Click on the link to access live demo running on AWS cloud
 
-[Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
+    Ask Peidong for the basic auth username/password
+
+    [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Live Swagger-UI") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
 
 Click on the link to access the swagger ui when run locally
 
-[Swagger-UI](http://localhost:7772/swagger-ui.html "Swagger-UI") http://localhost:7772/swagger-ui.html
+    [Local Swagger-UI](http://localhost:7772/swagger-ui.html "Swagger-UI") http://localhost:7773/swagger-ui.html
 
-### Creating static API Documentation
-To create static document in pdf and html format, Run following command
-
-	mvn test
-	
-Three files will be created in **\src\main\resources\asciidoc** directory
-
-1.  api-doc.adoc
-
-2.  api-doc.html
-
-3.  api-doc.pdf
-
-
-* PDF Sample : 
-[Generated pdf document](https://github.com/AtulRanjan/spring-boot2/tree/master/src/main/resources/asciidoc/api-doc.pdf "Generated pdf document") 
-
-
-* HTML Sample : [Generated html document](https://github.com/AtulRanjan/spring-boot2/tree/master/src/main/resources/asciidoc/api-doc.html "Generated html document") | [Preview](http://htmlpreview.github.io/?https://github.com/AtulRanjan/spring-boot2/blob/master/src/main/resources/asciidoc/api-doc.html "View doc")
