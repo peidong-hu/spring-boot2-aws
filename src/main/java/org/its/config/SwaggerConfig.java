@@ -27,6 +27,6 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Boot 2 Example").description("A rest API example with Spring Boot 2 Features!").version("0.1").build();
+		return new ApiInfoBuilder().title("AWS Fleet Instances").description("A rest API for provision aws fleet spot and ondeman instances!").version("0.1").build();
 	}
 }
