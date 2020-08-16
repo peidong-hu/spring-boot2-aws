@@ -3,7 +3,7 @@ package org.its.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.its.rest.controller.FleetController.FleetState;
+import org.its.rest.controller.AwsFleetController.FleetState;
 
 
 public interface FleetService {

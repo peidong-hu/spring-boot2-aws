@@ -11,7 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.its.model.FleetParam;
-import org.its.rest.controller.FleetController.FleetState;
+import org.its.rest.controller.AwsFleetController.FleetState;
 import org.its.service.FleetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

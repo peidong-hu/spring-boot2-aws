@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.its.model.FleetParam;
-import org.its.rest.controller.FleetController.FleetState;
+import org.its.rest.controller.AwsFleetController.FleetState;
 import org.its.service.Ec2Service;
 import org.its.service.FleetService;
 import org.its.service.impl.FleetParamValidationServiceImpl;
@@ -32,7 +32,7 @@ import software.amazon.awssdk.services.ec2.model.Instance;
 
 @RestController
 @RequestMapping("/spring-boot2")
-public class FleetController {
+public class AwsFleetController {
 	public static class FleetState {
 		final private FleetParam fleetParam;
 		final private UUID fleetUUID;
@@ -122,7 +122,7 @@ public class FleetController {
 
 	@GetMapping(value = "/fleet/{fleetUUID}")
 	public ResponseEntity<List<FleetState>> getFleetStatus(@PathVariable String fleetUUID) {
-		List<FleetState> fts = FleetController.fleets.stream()
+		List<FleetState> fts = AwsFleetController.fleets.stream()
 				.filter(ft -> ft.getFleetUUID().toString().equalsIgnoreCase(fleetUUID)).collect(Collectors.toList());
 		if (fts.size() == 0) {
 			return ResponseEntity.ok().body(fts).notFound().build();
@@ -136,7 +136,7 @@ public class FleetController {
 	@GetMapping(value = "/fleets")
 	public ResponseEntity<List<FleetState>> getAllFleets() {
 
-		return ResponseEntity.ok(FleetController.fleets);
+		return ResponseEntity.ok(AwsFleetController.fleets);
 
 	}
 

@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.its.rest.controller.FleetController;
-import org.its.rest.controller.FleetController.FleetState;
+import org.its.rest.controller.AwsFleetController;
+import org.its.rest.controller.AwsFleetController.FleetState;
 import org.its.service.Ec2Service;
 import org.its.service.impl.Ec2ServiceImpl;
 import org.springframework.batch.core.BatchStatus;
@@ -41,16 +41,16 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 		@Override
 		public List<FleetState> read()
 				throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-			int total = FleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getFleetParam().getNumberOfNodes()).collect(Collectors.summingInt(it->it.intValue()));
-			int totalMounted = FleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getInstancesWithAttachedVolum().size()).collect(Collectors.summingInt(it->it.intValue()));
-			if (FleetController.fleets.stream().filter(fl->!fl.isDryRun())
+			int total = AwsFleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getFleetParam().getNumberOfNodes()).collect(Collectors.summingInt(it->it.intValue()));
+			int totalMounted = AwsFleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getInstancesWithAttachedVolum().size()).collect(Collectors.summingInt(it->it.intValue()));
+			if (AwsFleetController.fleets.stream().filter(fl->!fl.isDryRun())
 					.filter(fs -> fs.getFleetParam().getNumberOfNodes() != fs.getInstancesWithAttachedVolum().size())
 					.count() == 0 || total - totalMounted < Ec2ServiceImpl.VOLUME_JOB_TRIGGER_THRESHOLD) {
 				return null;
 			} else {
 				long running = ec2Service.getAllRunningFleetInstances().stream().filter(ins->ins.state().name() == InstanceStateName.RUNNING).count();
 				if ( running > Ec2ServiceImpl.VOLUME_JOB_TRIGGER_THRESHOLD)
-					return FleetController.fleets;
+					return AwsFleetController.fleets;
 				else
 					return null;
 			}

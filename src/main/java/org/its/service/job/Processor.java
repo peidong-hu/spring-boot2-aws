@@ -3,7 +3,7 @@ package org.its.service.job;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.its.rest.controller.FleetController.FleetState;
+import org.its.rest.controller.AwsFleetController.FleetState;
 import org.its.service.Ec2Service;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

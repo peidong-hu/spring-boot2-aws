@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.its.rest.controller.FleetController.FleetState;
+import org.its.rest.controller.AwsFleetController.FleetState;
 import org.its.service.Ec2Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import software.amazon.awssdk.services.ec2.model.Instance;
 
 @RestController
 @RequestMapping("/spring-boot2")
-public class InstanceController {
+public class AwsInstanceController {
 
 	@Autowired
 	private Ec2Service ec2Service;
@@ -40,7 +40,7 @@ public class InstanceController {
 	// public ResponseEntity<List<FleetState>>
 	// getFleetInstancesVolumeAttachementStatus(String fleetUUID){
 	// List<FleetState> fts =
-	// FleetController.fleets.stream().filter(ft->ft.getFleetUUID().toString().equalsIgnoreCase(fleetUUID)).collect(Collectors.toList());
+	// AwsFleetController.fleets.stream().filter(ft->ft.getFleetUUID().toString().equalsIgnoreCase(fleetUUID)).collect(Collectors.toList());
 	// if (fts.size() == 0) {
 	// return ResponseEntity.ok().body(fts).notFound().build();
 	// } else if (fts.size() > 1) {
