@@ -105,7 +105,7 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 		return job;
 	}
 
-	@Scheduled(cron = "*/5 * * * * *")
+	@Scheduled(cron = "*/30 * * * * *")
 	public void perform() throws Exception {
 
 		System.out.println("Job Started at :" + new Date());
