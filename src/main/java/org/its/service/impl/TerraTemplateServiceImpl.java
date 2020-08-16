@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.its.service.Ec2Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -29,6 +32,9 @@ public class TerraTemplateServiceImpl {
 	private static String CZONE_ONDEMAND_SIZE_TAG = "CZONE-ONDEMAND-COUNT";
 	private static String UUID_TAG = "MULTI-ATTACH-UUID";
 
+	@Autowired
+	private Ec2Service ec2;
+	
 	// private static final String remoteUrl =
 	// "https://github.com/peidong-hu/Hygieia.git";
 	private int calculateEachInstanceTypeProvisionTotal(int numberOfInstanceTypes, int numberOfNodes) {
@@ -88,29 +94,31 @@ public class TerraTemplateServiceImpl {
 	}
 	//TODO query AWS to know which subnet belongs to which AZ;
 	private List<String> parseBzoneSubnets(List<String> subnets) {
-		List<String> retVal = new ArrayList<String>();
-		if (subnets.size() > 1) {
-			for (int i = 0; i < subnets.size(); i++) {
-				if (i < subnets.size() / 2)
-					retVal.add(subnets.get(i));
-			}
-		} else {
-			retVal.addAll(subnets);
-		}
-		return retVal;
+		return ec2.getAllSubnetIdsINZone("us-east-2b").stream().filter(sub -> subnets.contains(sub)).collect(Collectors.toList());
+//		List<String> retVal = new ArrayList<String>();
+//		if (subnets.size() > 1) {
+//			for (int i = 0; i < subnets.size(); i++) {
+//				if (i < subnets.size() / 2)
+//					retVal.add(subnets.get(i));
+//			}
+//		} else {
+//			retVal.addAll(subnets);
+//		}
+//		return retVal;
 	}
 	//TODO query AWS to know which subnet belongs to which AZ;
 	private List<String> parseCzoneSubnets(List<String> subnets, List<String> bZoneSubnets) {
-		List<String> retVal = new ArrayList<String>();
-		if (subnets.size() > 1) {
-			for (int i = 0; i < subnets.size(); i++) {
-				if (!bZoneSubnets.contains(subnets.get(i)))
-					retVal.add(subnets.get(i));
-			}
-		} else {
-			retVal.addAll(subnets);
-		}
-		return retVal;
+		return ec2.getAllSubnetIdsINZone("us-east-2c").stream().filter(sub -> subnets.contains(sub)).collect(Collectors.toList());
+//		List<String> retVal = new ArrayList<String>();
+//		if (subnets.size() > 1) {
+//			for (int i = 0; i < subnets.size(); i++) {
+//				if (!bZoneSubnets.contains(subnets.get(i)))
+//					retVal.add(subnets.get(i));
+//			}
+//		} else {
+//			retVal.addAll(subnets);
+//		}
+//		return retVal;
 	}
 
 	public boolean replaceVariables(String variableFile, int numberOfNodes, List<String> subnets, List<String> securityGroups,

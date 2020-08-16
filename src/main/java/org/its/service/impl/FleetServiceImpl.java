@@ -10,10 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-
 import org.its.model.FleetParam;
 import org.its.rest.controller.FleetController.FleetState;
-import org.its.service.Ec2Service;
 import org.its.service.FleetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,24 +19,16 @@ import org.springframework.stereotype.Service;
 import com.microsoft.terraform.TerraformClient;
 import com.microsoft.terraform.TerraformOptions;
 
-
 @Service
 public class FleetServiceImpl implements FleetService {
-	
-	
-	
-	private static String TERRAFORM_CODE_FOLDER = "/tmp/terra2/";
-	
-	private static String TERRAFORM_GIT_URL = "git@github.com:peidong-hu/terraform-ec2-fleet.git";
-	
-	
-	
-	
+
+	public final static String TERRAFORM_TEMPLATE_FOLDER = "/tmp/terra2/";
+
+	private final static String TERRAFORM_GIT_URL = "git@github.com:peidong-hu/terraform-ec2-fleet.git";
+
 	@Autowired
 	private JGitServiceImpl gitService;
-	
-	@Autowired
-	private Ec2Service ec2Service;
+
 	
 	@Autowired
 	private TerraTemplateServiceImpl terraTemplateService;
@@ -46,18 +36,20 @@ public class FleetServiceImpl implements FleetService {
 	private String removeColor(String input) {
 		// TODO code application logic here
 		return input.replace("\033[0m", "").replace("\033[31m", "").replace("\033[32m", "").replace("\033[33m", "")
-				.replace("\033[34m", "").replace("\033[35m", "").replace("\033[36m", "").replace("\033[37m", "").replace("\033[1m", "");
+				.replace("\033[34m", "").replace("\033[35m", "").replace("\033[36m", "").replace("\033[37m", "")
+				.replace("\033[1m", "");
 
 	}
-	
-	
+
 	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId, UUID uuid) {
-		
-		if (gitService.getGitRepo(TERRAFORM_GIT_URL, TERRAFORM_CODE_FOLDER).isPresent() && terraTemplateService.replaceVariables(TERRAFORM_CODE_FOLDER + "variables.tf", numberOfNodes, subnets, securityGroups, instanceTypes, volSize, amiId, uuid)) {
-			
+			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId, UUID uuid, String terraformFolder) {
+
+		if (gitService.getGitRepo(TERRAFORM_GIT_URL, terraformFolder).isPresent()
+				&& terraTemplateService.replaceVariables(terraformFolder + "variables.tf", numberOfNodes,
+						subnets, securityGroups, instanceTypes, volSize, amiId, uuid)) {
+
 			TerraformOptions options = new TerraformOptions();
-			
+
 			try (TerraformClient client = new TerraformClient(options)) {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				PrintStream ps = new PrintStream(baos);
@@ -65,21 +57,20 @@ public class FleetServiceImpl implements FleetService {
 				PrintStream old = System.out;
 				// Tell Java to use your special stream
 				System.setOut(ps);
-				
-				
-				client.setOutputListener(System.out::println);
-			    client.setErrorListener(System.err::println);
 
-			    client.setWorkingDirectory(new File(TERRAFORM_CODE_FOLDER));
-			    
-			    client.plan().get();
-			 // Put things back
+				client.setOutputListener(System.out::println);
+				client.setErrorListener(System.err::println);
+
+				client.setWorkingDirectory(new File(terraformFolder));
+
+				client.plan().get();
+				// Put things back
 				System.out.flush();
 				System.setOut(old);
 				// Show what happened
 				System.out.println("Here: " + baos.toString());
 				return removeColor(baos.toString());
-			    //client.apply().get();
+				// client.apply().get();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -93,25 +84,22 @@ public class FleetServiceImpl implements FleetService {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		
-			
-			
-		} 
+
+		}
 		return "failed";
-		
+
 	}
 
 	@Override
 	public String provision(FleetState fs) {
 		FleetParam fleetParam = fs.getFleetParam();
-		
+
 		return this.provision(fleetParam.getNumberOfNodes(),
 				fleetParam.getSubnets() == null ? new ArrayList<String>() : fleetParam.getSubnets(),
-				fleetParam.getSecurityGroups() == null ? new ArrayList<String>()
-						: fleetParam.getSecurityGroups(),
+				fleetParam.getSecurityGroups() == null ? new ArrayList<String>() : fleetParam.getSecurityGroups(),
 				Optional.ofNullable(fleetParam.getInstanceType()), Optional.ofNullable(fleetParam.getVolSize()),
-				Optional.ofNullable(fleetParam.getAmiId()), fs.getFleetUUID());
-		
+				Optional.ofNullable(fleetParam.getAmiId()), fs.getFleetUUID(), fs.getFleetTerraformFolder());
+
 	}
 
 }

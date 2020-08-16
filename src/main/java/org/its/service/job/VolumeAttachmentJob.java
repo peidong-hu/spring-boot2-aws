@@ -41,7 +41,7 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 		public void write(List<? extends List<FleetState>> fleetStates) throws Exception {
 			fleetStates.forEach(fleetS -> {
 				fleetS.forEach(fs -> {
-					System.out.println("fleet volume processed: " + fs.getInstancesWithAttachedVolum().stream().collect( Collectors.joining( "," )));
+					//System.out.println("fleet volume processed: " + fs.getInstancesWithAttachedVolum().stream().collect( Collectors.joining( "," )));
 				});
 				
 			});

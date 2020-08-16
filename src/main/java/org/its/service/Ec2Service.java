@@ -9,6 +9,8 @@ public interface Ec2Service {
 
 	public List<Instance> getAllFleetInstances();
 	
+	public List<String> getAllSubnetIdsINZone(String zone);
+	
 	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize, String muiltiAttachUUID);
 	
 	

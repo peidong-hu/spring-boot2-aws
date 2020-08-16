@@ -17,10 +17,13 @@ import software.amazon.awssdk.services.ec2.model.CreateVolumeRequest;
 import software.amazon.awssdk.services.ec2.model.CreateVolumeResponse;
 import software.amazon.awssdk.services.ec2.model.DescribeInstancesRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeInstancesResponse;
+import software.amazon.awssdk.services.ec2.model.DescribeSubnetsRequest;
+import software.amazon.awssdk.services.ec2.model.DescribeSubnetsResponse;
 import software.amazon.awssdk.services.ec2.model.DescribeVolumesRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeVolumesResponse;
 import software.amazon.awssdk.services.ec2.model.Instance;
 import software.amazon.awssdk.services.ec2.model.Reservation;
+import software.amazon.awssdk.services.ec2.model.Subnet;
 import software.amazon.awssdk.services.ec2.model.Filter;
 import software.amazon.awssdk.services.ec2.model.VolumeState;
 import software.amazon.awssdk.services.ec2.model.VolumeType;
@@ -81,11 +84,11 @@ public class Ec2ServiceImpl implements Ec2Service {
 							.filter(device -> device.deviceName().equalsIgnoreCase(DEVICE_NAME)).count() == 0;
 				}).collect(Collectors.toList()));
 			}
-			System.out.println("number of instances in zone " + az);
-			System.out.println("number of instances:" + fleetInstances.size());
-			fleetInstances.forEach(ins -> {
-				System.out.println(ins.instanceId());
-			});
+			//System.out.println("number of instances in zone " + az);
+			//System.out.println("number of instances:" + fleetInstances.size());
+//			fleetInstances.forEach(ins -> {
+//				System.out.println(ins.instanceId());
+//			});
 			//TODO to save resources, I am using 3 instead of 16 as the bucket size to run the demo
 			if (fleetInstances.size() >= 3) {
 				//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
@@ -105,7 +108,13 @@ public class Ec2ServiceImpl implements Ec2Service {
 		return successAttachRequestedInstances;
 
 	}
-
+	@Override
+	public List<String> getAllSubnetIdsINZone(String zone) {
+		DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().filters(Filter.builder().name("availability-zone").values(zone).build()).build();
+		DescribeSubnetsResponse res = ec2.describeSubnets(request);
+		return res.subnets().stream().map(net -> net.subnetId()).collect(Collectors.toList());
+		
+	}
 	private boolean attachMultiAttachVolume(String multiAttachVolumeId, Instance instance) {
 
 		AttachVolumeResponse res = ec2.attachVolume(AttachVolumeRequest.builder().device(DEVICE_NAME)
