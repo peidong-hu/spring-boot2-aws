@@ -43,9 +43,9 @@ import io.github.swagger2markup.markup.builder.MarkupLanguage;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringRestApplication.class,
 		SwaggerConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TerraTemplateServiceImplTest {
+public class SwaggerTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TerraTemplateServiceImplTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SwaggerTest.class);
 
 	@Autowired
 	TestRestTemplate restTemplate;

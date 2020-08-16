@@ -20,7 +20,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 //	}
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.antMatcher("/spring-boot2/**")
             .csrf().disable()
             .httpBasic()
             .and()

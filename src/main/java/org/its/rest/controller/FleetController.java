@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ec2Fleet")
+@RequestMapping("/spring-boot2/ec2Fleet")
 public class FleetController {
 	public static class FleetState {
 		final private FleetParam fleetParam;

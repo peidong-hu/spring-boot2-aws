@@ -1,7 +1,7 @@
 server:
-  port: 7772
+  port: 7773
   servlet:
-    context-path: /spring-boot2
+    context-path: /
 spring:
   batch:
     job:
