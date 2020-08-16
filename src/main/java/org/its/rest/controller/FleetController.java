@@ -107,7 +107,10 @@ public class FleetController {
 		}
 		FleetState fs = new FleetState(fleetParam, fleetUUID, fleetTerraformFolder, dryRun);
 		fleets.add(fs);
-		return ResponseEntity.ok().header("Content-Type", "text/html").body(fleetService.provision(fs));
+		if (!dryRun)
+			return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "text/html").body(fleetService.provision(fs));
+		else
+			return ResponseEntity.ok().header("Content-Type", "text/html").body(fleetService.provision(fs));
 	}
 
 	@GetMapping(value = "/fleet/{fleetUUID}/instanceIds")

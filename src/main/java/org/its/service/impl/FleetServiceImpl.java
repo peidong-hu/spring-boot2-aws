@@ -72,7 +72,7 @@ public class FleetServiceImpl implements FleetService {
 					System.setOut(old);
 					// Show what happened
 					System.out.println("Here: " + baos.toString());
-					return FLEET_UUID_KEYWORD +": (Note: dry-run/Wet-run consider different fleet having different uuid) "+ uuid + "\n" + removeColor(baos.toString());
+					return "This is a dry-run, no instance created, see terraform plan below, \n\n" + "(Note: dry-run/Wet-run is considered as different fleet having different uuid) \n\n" +  FLEET_UUID_KEYWORD +": "+ uuid + "\n" + removeColor(baos.toString());
 				} else {
 					client.apply().get();
 					// Put things back
@@ -80,7 +80,7 @@ public class FleetServiceImpl implements FleetService {
 					System.setOut(old);
 					// Show what happened
 					System.out.println("Here: " + baos.toString());
-					return FLEET_UUID_KEYWORD +": (Note: dry-run/Wet-run consider different fleet having different uuid)"+ uuid + "\n"  + removeColor(baos.toString());
+					return "This is a wet-run, instances are created, see terraform apply result below, \n\n" + "(Note: dry-run/Wet-run is considered as different fleet having different uuid) \n\n" +  FLEET_UUID_KEYWORD +": "+ uuid + "\n"  + removeColor(baos.toString());
 
 				}
 			} catch (InterruptedException e) {
