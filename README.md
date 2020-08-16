@@ -1,8 +1,10 @@
-# Restful API with Swagger-UI to Manage AWS Ec2 Fleet
+# Restful API with Swagger-UI to Manage AWS Ec2 Fleet Built on Springboot2 in Java 8
 
 ## Features
 
-##### 1. Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment
+##### 0. Integrate with Terraform to use EC2 fleets as the way of provisioning VMs for the deployment. 
+
+##### 1. Dry-run as default option in fleet POST api call, user can inspect the terraform plan result in api response to decide if will issue a wet-run.
 
 ##### 2. Provisioned EC2 fleets have 80% spot and 20% on-demand instances
 
@@ -27,6 +29,21 @@
     multi_attach_vol_size: (optional); Integer. Used to specify the size in GB of the shared IO1 vol. Defaults to 4GB! (AWS access min 4GB for IO1 volume, can't be set to 3GB as default)
 
     ami_id: (optional); String. Used to specify the AMI used for the nodes. Defaults to Ubuntu 18.04 server
+
+## Missing bonus features
+
+##### Implement receiving the parameters using command line options and env vars.
+
+##### Provide more unit tests for the code. 
+
+##### Allow the tool to use an external data store to allow for recovering from undesired interruptions.
+
+##### Split the tool into a command line client and a daemon.
+
+##### Implement a simple shell command line client using curl to call this api
+
+##### Convert this restful service to a serverless restful API using API Gateway and Lambda or Openfaas in Kubernetes.
+
 
 ## Build Project
 
