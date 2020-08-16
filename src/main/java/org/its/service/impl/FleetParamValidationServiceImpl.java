@@ -4,36 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
 import org.its.model.FleetParam;
-import org.its.service.Ec2Service;
-import org.jsoup.parser.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.services.ec2.Ec2Client;
-import software.amazon.awssdk.services.ec2.model.AttachVolumeRequest;
-import software.amazon.awssdk.services.ec2.model.AttachVolumeResponse;
-import software.amazon.awssdk.services.ec2.model.CreateVolumeRequest;
-import software.amazon.awssdk.services.ec2.model.CreateVolumeResponse;
 import software.amazon.awssdk.services.ec2.model.DescribeImagesRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeInstanceTypesRequest;
-import software.amazon.awssdk.services.ec2.model.DescribeInstancesRequest;
-import software.amazon.awssdk.services.ec2.model.DescribeInstancesResponse;
 import software.amazon.awssdk.services.ec2.model.DescribeSecurityGroupsRequest;
 import software.amazon.awssdk.services.ec2.model.DescribeSubnetsRequest;
-import software.amazon.awssdk.services.ec2.model.DescribeSubnetsResponse;
-import software.amazon.awssdk.services.ec2.model.DescribeVolumesRequest;
-import software.amazon.awssdk.services.ec2.model.DescribeVolumesResponse;
-import software.amazon.awssdk.services.ec2.model.Instance;
 import software.amazon.awssdk.services.ec2.model.InstanceType;
-import software.amazon.awssdk.services.ec2.model.InstanceTypeInfo;
-import software.amazon.awssdk.services.ec2.model.Reservation;
-import software.amazon.awssdk.services.ec2.model.SecurityGroup;
-import software.amazon.awssdk.services.ec2.model.Subnet;
 import software.amazon.awssdk.services.ec2.model.Filter;
-import software.amazon.awssdk.services.ec2.model.VolumeState;
-import software.amazon.awssdk.services.ec2.model.VolumeType;
 
 @Service
 public class FleetParamValidationServiceImpl {
