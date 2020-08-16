@@ -27,7 +27,7 @@
 
 ## Design and implementation
 
-##### This service works with Terraform to use Terraform script as template to plan/apply fleet/instances to aws. Terraform script can be found at [link to Terraform script] (https://github.com/peidong-hu/terraform-ec2-fleet "Terraform-Scripts")
+##### This service works with Terraform to use Terraform script as template to plan/apply fleet/instances to aws. Terraform script can be found at [link to Terraform script](https://github.com/peidong-hu/terraform-ec2-fleet "Terraform-Scripts") https://github.com/peidong-hu/terraform-ec2-fleet
 
 ##### This service follows typical Springboot RESTFUL service design which include, Swagger-ui as the view, Controller as the api endpoint control, Service as the component handling business logic and Model as the entity modeling layer. These are the java packages which represent each layer,
     1. package org.its.rest.controller (api endpoint control layer)
@@ -61,9 +61,9 @@ Click on the link to access live demo running on AWS cloud
 
     Ask Peidong for the basic auth username/password
 
-##### [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Live Swagger-ui")
+##### [Live Swagger-UI](https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html "Live Swagger-ui") https://aws-fleet.peidong.eco-perf.cloud/swagger-ui.html
 
 Click on the link to access the swagger ui when run locally
 
-##### [Local Swagger-UI](http://localhost:7773/swagger-ui.html "Local swagger-ui")
+##### [Local Swagger-UI](http://localhost:7773/swagger-ui.html "Local swagger-ui") http://localhost:7773/swagger-ui.html
 
