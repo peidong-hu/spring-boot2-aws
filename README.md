@@ -1,4 +1,4 @@
-# Restful API Service with Swagger-UI to Manage AWS Ec2 Fleet instances. 
+# Restful API service with Swagger-UI for AWS ec2 fleet/instances management 
 
 ## Features
 
