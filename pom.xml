@@ -3,12 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.its</groupId>
-	<artifactId>spring-boot2-example</artifactId>
+	<artifactId>spring-boot2-aws</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-boot2</name>
 	<packaging>jar</packaging>
-	<url>https://github.com/AtulRanjan/spring-boot2</url>
-
+	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -155,5 +154,5 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-	<description>An Spring Boot 2 Project Example </description>
+	<description>An Spring Boot 2 Project </description>
 </project>
