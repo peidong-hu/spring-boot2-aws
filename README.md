@@ -27,6 +27,8 @@
 
 ## Design and implementation
 
+##### This service works with Terraform to use Terraform script as template to plan/apply fleet/instances to aws. Terraform script can be found at [link to Terraform script] (https://github.com/peidong-hu/terraform-ec2-fleet)
+
 ##### This service follows typical Springboot RESTFUL service design which include, Swagger-ui as the view, Controller as the api endpoint control, Service as the component handling business logic and Model as the entity modeling layer. These are the java packages which represent each layer,
     1. package org.its.rest.controller (api endpoint control layer)
     2. package org.its.service (service layer)
