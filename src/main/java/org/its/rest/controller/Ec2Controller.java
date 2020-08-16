@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import software.amazon.awssdk.services.ec2.model.Instance;
 
 @RestController
-@RequestMapping("/ec2FleetInstances")
+@RequestMapping("/fleetInstances")
 public class Ec2Controller {
 
 	@Autowired
@@ -29,7 +29,7 @@ public class Ec2Controller {
 		return ResponseEntity.ok(list); 
 	}
 	
-	@GetMapping(value="getFleetInstancesVolumeAttachmentStatus")
+	@GetMapping(value="fleetInstancesVolumesStatus")
 	public ResponseEntity<List<FleetState>> getFleetInstancesVolumeAttachementStatus(String fleetUUID){
 		List<FleetState> fts = FleetController.fleets.stream().filter(ft->ft.getFleetUUID().toString().equalsIgnoreCase(fleetUUID)).collect(Collectors.toList());
 		if (fts.size() == 0) {
