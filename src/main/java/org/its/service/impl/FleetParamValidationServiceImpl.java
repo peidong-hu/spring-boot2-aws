@@ -59,13 +59,16 @@ public class FleetParamValidationServiceImpl {
 		}
 		if (fleetParam.getInstanceType() != null) {
 			InstanceType input = InstanceType.fromValue(fleetParam.getInstanceType());
-			List<InstanceType> instTypes = ec2
-					.describeInstanceTypes(
-							DescribeInstanceTypesRequest.builder().instanceTypes(input).build())
-					.instanceTypes().stream().map(inst -> inst.instanceType()).collect(Collectors.toList());
-			
-			if (instTypes.size() == 0) {
-				retVal.add("instance type is invalid");
+			if (input == InstanceType.UNKNOWN_TO_SDK_VERSION)
+				retVal.add("instance type is UNKNOWN_TO_SDK_VERSION");
+			else {
+				List<InstanceType> instTypes = ec2
+						.describeInstanceTypes(DescribeInstanceTypesRequest.builder().instanceTypes(input).build())
+						.instanceTypes().stream().map(inst -> inst.instanceType()).collect(Collectors.toList());
+
+				if (instTypes.size() == 0) {
+					retVal.add("instance type is invalid");
+				}
 			}
 		}
 		if (fleetParam.getSecurityGroups().size() > 0) {
