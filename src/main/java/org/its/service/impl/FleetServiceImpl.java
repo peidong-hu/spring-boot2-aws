@@ -29,7 +29,6 @@ public class FleetServiceImpl implements FleetService {
 	@Autowired
 	private JGitServiceImpl gitService;
 
-	
 	@Autowired
 	private TerraTemplateServiceImpl terraTemplateService;
 
@@ -42,11 +41,12 @@ public class FleetServiceImpl implements FleetService {
 	}
 
 	public String provision(int numberOfNodes, List<String> subnets, List<String> securityGroups,
-			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId, UUID uuid, String terraformFolder) {
+			Optional<String> instanceTypes, Optional<Integer> volSize, Optional<String> amiId, UUID uuid,
+			String terraformFolder, boolean dryRun) {
 
 		if (gitService.getGitRepo(TERRAFORM_GIT_URL, terraformFolder).isPresent()
-				&& terraTemplateService.replaceVariables(terraformFolder + "variables.tf", numberOfNodes,
-						subnets, securityGroups, instanceTypes, volSize, amiId, uuid)) {
+				&& terraTemplateService.replaceVariables(terraformFolder + "variables.tf", numberOfNodes, subnets,
+						securityGroups, instanceTypes, volSize, amiId, uuid)) {
 
 			TerraformOptions options = new TerraformOptions();
 
@@ -64,13 +64,23 @@ public class FleetServiceImpl implements FleetService {
 				client.setWorkingDirectory(new File(terraformFolder));
 
 				client.plan().get();
-				// Put things back
-				System.out.flush();
-				System.setOut(old);
-				// Show what happened
-				System.out.println("Here: " + baos.toString());
-				return removeColor(baos.toString());
-				// client.apply().get();
+				if (dryRun) {
+					// Put things back
+					System.out.flush();
+					System.setOut(old);
+					// Show what happened
+					System.out.println("Here: " + baos.toString());
+					return removeColor(baos.toString());
+				} else {
+					client.apply().get();
+					// Put things back
+					System.out.flush();
+					System.setOut(old);
+					// Show what happened
+					System.out.println("Here: " + baos.toString());
+					return removeColor(baos.toString());
+
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -98,7 +108,8 @@ public class FleetServiceImpl implements FleetService {
 				fleetParam.getSubnets() == null ? new ArrayList<String>() : fleetParam.getSubnets(),
 				fleetParam.getSecurityGroups() == null ? new ArrayList<String>() : fleetParam.getSecurityGroups(),
 				Optional.ofNullable(fleetParam.getInstanceType()), Optional.ofNullable(fleetParam.getVolSize()),
-				Optional.ofNullable(fleetParam.getAmiId()), fs.getFleetUUID(), fs.getFleetTerraformFolder());
+				Optional.ofNullable(fleetParam.getAmiId()), fs.getFleetUUID(), fs.getFleetTerraformFolder(),
+				fs.isDryRun());
 
 	}
 

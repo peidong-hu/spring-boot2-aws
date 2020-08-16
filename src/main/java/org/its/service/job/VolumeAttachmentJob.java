@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.its.rest.controller.FleetController;
 import org.its.rest.controller.FleetController.FleetState;
+import org.its.service.Ec2Service;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -28,21 +29,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import software.amazon.awssdk.services.ec2.model.InstanceStateName;
+
 @Component
 public class VolumeAttachmentJob extends JobExecutionListenerSupport {
+	@Autowired
+	private Ec2Service ec2Service;
 	public class Reader implements ItemReader<List<FleetState>> {
 
 		@Override
 		public List<FleetState> read()
 				throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-			int total = FleetController.fleets.stream().map(fsp -> fsp.getFleetParam().getNumberOfNodes()).collect(Collectors.summingInt(it->it.intValue()));
-			int totalMounted = FleetController.fleets.stream().map(fsp -> fsp.getInstancesWithAttachedVolum().size()).collect(Collectors.summingInt(it->it.intValue()));
-			if (FleetController.fleets.stream()
+			int total = FleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getFleetParam().getNumberOfNodes()).collect(Collectors.summingInt(it->it.intValue()));
+			int totalMounted = FleetController.fleets.stream().filter(fl->!fl.isDryRun()).map(fsp -> fsp.getInstancesWithAttachedVolum().size()).collect(Collectors.summingInt(it->it.intValue()));
+			if (FleetController.fleets.stream().filter(fl->!fl.isDryRun())
 					.filter(fs -> fs.getFleetParam().getNumberOfNodes() != fs.getInstancesWithAttachedVolum().size())
 					.count() == 0 || total - totalMounted < 16) {
 				return null;
 			} else {
-				return FleetController.fleets;
+				long running = ec2Service.getAllFleetInstances().stream().filter(ins->ins.state().name() == InstanceStateName.RUNNING).count();
+				if ( running > 16)
+					return FleetController.fleets;
+				else
+					return null;
 			}
 
 		}
