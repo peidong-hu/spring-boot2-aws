@@ -20,25 +20,25 @@ import software.amazon.awssdk.services.ec2.model.Instance;
 @RequestMapping("/spring-boot2/fleetInstances")
 public class Ec2Controller {
 
-	@Autowired
-	private Ec2Service ec2Service;
-
-	@GetMapping
-	public ResponseEntity<List<String>> getAllRunningFleetInstances(){
-		List<String> list = ec2Service.getAllRunningFleetInstances().stream().map(Instance::instanceId).collect(Collectors.toList());
-		return ResponseEntity.ok(list); 
-	}
-	
-	@GetMapping(value="/fleetInstancesVolumesStatus")
-	public ResponseEntity<List<FleetState>> getFleetInstancesVolumeAttachementStatus(String fleetUUID){
-		List<FleetState> fts = FleetController.fleets.stream().filter(ft->ft.getFleetUUID().toString().equalsIgnoreCase(fleetUUID)).collect(Collectors.toList());
-		if (fts.size() == 0) {
-			return ResponseEntity.ok().body(fts).notFound().build();
-		} else if (fts.size() > 1) {
-			return ResponseEntity.ok().body(fts).unprocessableEntity().build();
-		} else {
-			return ResponseEntity.ok(fts);
-		}
-	}
+//	@Autowired
+//	private Ec2Service ec2Service;
+//
+//	@GetMapping
+//	public ResponseEntity<List<String>> getAllRunningFleetInstances(){
+//		List<String> list = ec2Service.getAllRunningFleetInstances().stream().map(Instance::instanceId).collect(Collectors.toList());
+//		return ResponseEntity.ok(list); 
+//	}
+//	
+//	@GetMapping(value="/fleetInstancesVolumesStatus")
+//	public ResponseEntity<List<FleetState>> getFleetInstancesVolumeAttachementStatus(String fleetUUID){
+//		List<FleetState> fts = FleetController.fleets.stream().filter(ft->ft.getFleetUUID().toString().equalsIgnoreCase(fleetUUID)).collect(Collectors.toList());
+//		if (fts.size() == 0) {
+//			return ResponseEntity.ok().body(fts).notFound().build();
+//		} else if (fts.size() > 1) {
+//			return ResponseEntity.ok().body(fts).unprocessableEntity().build();
+//		} else {
+//			return ResponseEntity.ok(fts);
+//		}
+//	}
 	
 }

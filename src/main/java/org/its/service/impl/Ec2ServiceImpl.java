@@ -30,7 +30,7 @@ import software.amazon.awssdk.services.ec2.model.VolumeType;
 @Service
 public class Ec2ServiceImpl implements Ec2Service {
 	public static final String[] AVAILABLE_ZONES = { "us-east-2b", "us-east-2c" };
-	public static final int DEFAULT_VOL_SIZE = 4; //TODO Cant be 3 since the min size required by aws is 4 for io1
+	public static final int DEFAULT_VOL_SIZE = 4; // TODO Cant be 3 since the min size required by aws is 4 for io1
 	public static final String MULTI_ATTACH_TAG_NAME = "multiVolAttach";
 	public static final String DEVICE_NAME = "/dev/sdf";
 	public static final String FLEET_TAG_NAME = "aws:ec2:fleet-id";
@@ -40,12 +40,21 @@ public class Ec2ServiceImpl implements Ec2Service {
 	private Ec2Client ec2;
 
 	@Override
-	public List<Instance> getAllRunningFleetInstances() {
+	public List<Instance> getAllRunningFleetInstances(String fleetUUID) {
 		List<Instance> fleetInstances = new ArrayList<Instance>();
-
-		DescribeInstancesRequest request = DescribeInstancesRequest.builder()
-				.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build(),
-						Filter.builder().name("instance-state-name").values("running").build()).build(); 
+		DescribeInstancesRequest request;
+		if (fleetUUID != null) {
+			request = DescribeInstancesRequest.builder()
+					.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build(),
+							Filter.builder().name("instance-state-name").values("running").build(),
+							Filter.builder().name("tag:" + MULTI_ATTACH_TAG_NAME).values(fleetUUID).build())
+					.build();
+		} else {
+			request = DescribeInstancesRequest.builder()
+					.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build(),
+							Filter.builder().name("instance-state-name").values("running").build())
+					.build();
+		}
 
 		DescribeInstancesResponse response = ec2.describeInstances(request);
 
@@ -60,7 +69,7 @@ public class Ec2ServiceImpl implements Ec2Service {
 	public List<Instance> attachVolumeToUnattachedFleetInstances(int volSize, String muiltiAttachUUID) {
 
 		List<Instance> successAttachRequestedInstances = new ArrayList<Instance>();
-				
+
 		Arrays.asList(AVAILABLE_ZONES).forEach(az -> {
 			List<Instance> fleetInstances = new ArrayList<Instance>();
 			Filter filter = Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build();
@@ -73,8 +82,8 @@ public class Ec2ServiceImpl implements Ec2Service {
 			Filter filter3 = Filter.builder().name("instance-state-name").values("running").build();
 			Filter filter4 = Filter.builder().name("tag:" + MULTI_ATTACH_TAG_NAME).values(muiltiAttachUUID).build();
 
-			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder().filters(filter, filter2, filter3, filter4)
-					.build();
+			DescribeInstancesRequest bzoneRequest = DescribeInstancesRequest.builder()
+					.filters(filter, filter2, filter3, filter4).build();
 
 			DescribeInstancesResponse response = ec2.describeInstances(bzoneRequest);
 
@@ -84,39 +93,50 @@ public class Ec2ServiceImpl implements Ec2Service {
 							.filter(device -> device.deviceName().equalsIgnoreCase(DEVICE_NAME)).count() == 0;
 				}).collect(Collectors.toList()));
 			}
-			//System.out.println("number of instances in zone " + az);
-			//System.out.println("number of instances:" + fleetInstances.size());
-//			fleetInstances.forEach(ins -> {
-//				System.out.println(ins.instanceId());
-//			});
-			//TODO the problem description doesn't address what to do with the volume size difference from user input in the case that instances out of the 16 size of 
-			//attach bucket for a specific call. It will leaves some instances with no volumes for example for the 17th instance because each call could have different 
-			//volume size requirement. Use 1 as the bucket size will avoid this for demo purpose.
+			// System.out.println("number of instances in zone " + az);
+			// System.out.println("number of instances:" + fleetInstances.size());
+			// fleetInstances.forEach(ins -> {
+			// System.out.println(ins.instanceId());
+			// });
+			// TODO the problem description doesn't address what to do with the volume size
+			// difference from user input in the case that instances out of the 16 size of
+			// attach bucket for a specific call. It will leaves some instances with no
+			// volumes for example for the 17th instance because each call could have
+			// different
+			// volume size requirement. Use 1 as the bucket size will avoid this for demo
+			// purpose.
 			if (fleetInstances.size() >= VOLUME_JOB_TRIGGER_THRESHOLD) {
-				//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
-				//String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
+				// TODO I have no MultiAttachedVolume suported AZ in my account, I will just use
+				// regular volume to demo the code
+				// String volId = this.createMultiAttachVolume((String) az, volSize == 0 ?
+				// DEFAULT_VOL_SIZE : volSize);
 				for (int index = 0; index < VOLUME_JOB_TRIGGER_THRESHOLD; index++) {
 					Instance inst = fleetInstances.get(index);
-					//if (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1) {
-						String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
-						
-						if (isVolumeAvailable(volId) && attachMultiAttachVolume(volId, fleetInstances.get(index))) {
-							successAttachRequestedInstances.add(fleetInstances.get(index));
-						}
-					//}
+					// if
+					// (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1)
+					// {
+					String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
+
+					if (isVolumeAvailable(volId) && attachMultiAttachVolume(volId, fleetInstances.get(index))) {
+						successAttachRequestedInstances.add(fleetInstances.get(index));
+					}
+					// }
 				}
 			}
 		});
 		return successAttachRequestedInstances;
 
 	}
+
 	@Override
 	public List<String> getAllSubnetIdsINZone(String zone) {
-		DescribeSubnetsRequest request = DescribeSubnetsRequest.builder().filters(Filter.builder().name("availability-zone").values(zone).build()).build();
+		DescribeSubnetsRequest request = DescribeSubnetsRequest.builder()
+				.filters(Filter.builder().name("availability-zone").values(zone).build()).build();
 		DescribeSubnetsResponse res = ec2.describeSubnets(request);
 		return res.subnets().stream().map(net -> net.subnetId()).collect(Collectors.toList());
-		
+
 	}
+
 	private boolean attachMultiAttachVolume(String multiAttachVolumeId, Instance instance) {
 
 		AttachVolumeResponse res = ec2.attachVolume(AttachVolumeRequest.builder().device(DEVICE_NAME)
@@ -127,12 +147,14 @@ public class Ec2ServiceImpl implements Ec2Service {
 	}
 
 	private boolean isVolumeAvailable(String volumeId) {
-		//TODO this polling can be refactored to using async call to improve performance.
+		// TODO this polling can be refactored to using async call to improve
+		// performance.
 		int timeout = 300;
 		int loopCount = 0;
 		while (loopCount < timeout) {
-			DescribeVolumesResponse res = ec2.describeVolumes(DescribeVolumesRequest.builder().volumeIds(volumeId).build());
-			if (res.volumes().stream().filter(vol->{
+			DescribeVolumesResponse res = ec2
+					.describeVolumes(DescribeVolumesRequest.builder().volumeIds(volumeId).build());
+			if (res.volumes().stream().filter(vol -> {
 				return vol.state().equals(VolumeState.AVAILABLE);
 			}).count() > 0) {
 				break;
@@ -146,15 +168,24 @@ public class Ec2ServiceImpl implements Ec2Service {
 			}
 			loopCount = loopCount + 1;
 		}
-		if (loopCount == 300) return false;
-		else return true;
+		if (loopCount == 300)
+			return false;
+		else
+			return true;
 	}
-	
+
 	private String createMultiAttachVolume(String az, int sizeInGB) {
-		//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
-		CreateVolumeResponse res = ec2.createVolume(CreateVolumeRequest.builder().multiAttachEnabled(false)
-				.availabilityZone(az).size(sizeInGB).volumeType(VolumeType.IO1).iops(sizeInGB*10 > 100 ? sizeInGB*10 : 100).build());
+		// TODO I have no MultiAttachedVolume suported AZ in my account, I will just use
+		// regular volume to demo the code
+		CreateVolumeResponse res = ec2.createVolume(
+				CreateVolumeRequest.builder().multiAttachEnabled(false).availabilityZone(az).size(sizeInGB)
+						.volumeType(VolumeType.IO1).iops(sizeInGB * 10 > 100 ? sizeInGB * 10 : 100).build());
 		return res.volumeId();
+	}
+
+	@Override
+	public List<Instance> getAllRunningFleetInstances() {
+		return this.getAllRunningFleetInstances(null);
 	}
 
 }
