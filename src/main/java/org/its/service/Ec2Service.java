@@ -7,7 +7,7 @@ import software.amazon.awssdk.services.ec2.model.Instance;
 
 public interface Ec2Service {
 
-	public List<Instance> getAllFleetInstances();
+	public List<Instance> getAllRunningFleetInstances();
 	
 	public List<String> getAllSubnetIdsINZone(String zone);
 	

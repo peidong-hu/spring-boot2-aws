@@ -40,11 +40,12 @@ public class Ec2ServiceImpl implements Ec2Service {
 	private Ec2Client ec2;
 
 	@Override
-	public List<Instance> getAllFleetInstances() {
+	public List<Instance> getAllRunningFleetInstances() {
 		List<Instance> fleetInstances = new ArrayList<Instance>();
 
 		DescribeInstancesRequest request = DescribeInstancesRequest.builder()
-				.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build()).build(); 
+				.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build(),
+						Filter.builder().name("instance-state-name").values("running").build()).build(); 
 
 		DescribeInstancesResponse response = ec2.describeInstances(request);
 

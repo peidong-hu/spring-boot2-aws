@@ -72,10 +72,9 @@ public class FleetParamValidationServiceImpl {
 			}
 		}
 		if (fleetParam.getSecurityGroups() != null && fleetParam.getSecurityGroups().size() > 0) {
-			// List<Filter> sgFilters = new ArrayList<Filter>();
-			// fleetParam.getSecurityGroups().forEach(sg -> {
-			// sgFilters.add(Filter.builder().name("group-id").values(sg).build());
-			// });
+			List<String> listWithNoDuplicates = fleetParam.getSecurityGroups().stream().distinct().collect(Collectors.toList());
+			fleetParam.getSecurityGroups().removeAll(fleetParam.getSecurityGroups());
+			fleetParam.getSecurityGroups().addAll(listWithNoDuplicates);
 			DescribeSecurityGroupsRequest.builder()
 					.filters(Filter.builder().name("group-id").values(fleetParam.getSecurityGroups()).build()).build();
 			List<String> sgs = ec2.describeSecurityGroups(DescribeSecurityGroupsRequest.builder()
@@ -89,10 +88,9 @@ public class FleetParamValidationServiceImpl {
 
 		}
 		if (fleetParam.getSubnets() != null && fleetParam.getSubnets().size() > 0) {
-			// List<Filter> sgFilters = new ArrayList<Filter>();
-			// fleetParam.getSubnets().forEach(sg -> {
-			// sgFilters.add(Filter.builder().name("subnet-id").values(sg).build());
-			// });
+			List<String> listWithNoDuplicates = fleetParam.getSubnets().stream().distinct().collect(Collectors.toList());
+			fleetParam.getSubnets().removeAll(fleetParam.getSubnets());
+			fleetParam.getSubnets().addAll(listWithNoDuplicates);
 
 			List<String> sgs = ec2.describeSubnets(DescribeSubnetsRequest.builder()
 					.filters(Filter.builder().name("subnet-id").values(fleetParam.getSubnets()).build()).build())

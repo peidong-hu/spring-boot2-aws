@@ -48,7 +48,7 @@ public class VolumeAttachmentJob extends JobExecutionListenerSupport {
 					.count() == 0 || total - totalMounted < Ec2ServiceImpl.VOLUME_JOB_TRIGGER_THRESHOLD) {
 				return null;
 			} else {
-				long running = ec2Service.getAllFleetInstances().stream().filter(ins->ins.state().name() == InstanceStateName.RUNNING).count();
+				long running = ec2Service.getAllRunningFleetInstances().stream().filter(ins->ins.state().name() == InstanceStateName.RUNNING).count();
 				if ( running > Ec2ServiceImpl.VOLUME_JOB_TRIGGER_THRESHOLD)
 					return FleetController.fleets;
 				else

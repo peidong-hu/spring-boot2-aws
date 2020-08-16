@@ -25,6 +25,8 @@ public class FleetServiceImpl implements FleetService {
 	public final static String TERRAFORM_TEMPLATE_FOLDER = "/tmp/terra2/";
 
 	private final static String TERRAFORM_GIT_URL = "git@github.com:peidong-hu/terraform-ec2-fleet.git";
+	
+	private final static String FLEET_UUID_KEYWORD = "Fleet_UUID_KEYWORD";
 
 	@Autowired
 	private JGitServiceImpl gitService;
@@ -70,7 +72,7 @@ public class FleetServiceImpl implements FleetService {
 					System.setOut(old);
 					// Show what happened
 					System.out.println("Here: " + baos.toString());
-					return removeColor(baos.toString());
+					return FLEET_UUID_KEYWORD +": "+ uuid + "\n" + removeColor(baos.toString());
 				} else {
 					client.apply().get();
 					// Put things back
@@ -78,7 +80,7 @@ public class FleetServiceImpl implements FleetService {
 					System.setOut(old);
 					// Show what happened
 					System.out.println("Here: " + baos.toString());
-					return removeColor(baos.toString());
+					return FLEET_UUID_KEYWORD +": "+ uuid + "\n"  + removeColor(baos.toString());
 
 				}
 			} catch (InterruptedException e) {
