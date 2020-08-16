@@ -2,6 +2,7 @@ package org.its.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.assertj.core.util.Arrays;
@@ -62,6 +63,32 @@ public class Ec2ServiceImpl implements Ec2Service {
 			fleetInstances.addAll(reservation.instances());
 		}
 		return fleetInstances;
+
+	}
+
+	@Override
+	public Optional<Instance> getInstance(String instanceId) {
+		List<Instance> fleetInstances = new ArrayList<Instance>();
+		DescribeInstancesRequest request;
+		if (instanceId != null) {
+			request = DescribeInstancesRequest.builder()
+					.filters(Filter.builder().name("tag:" + FLEET_TAG_NAME).values("*").build(),
+							Filter.builder().name("instance-state-name").values("running").build(),
+							Filter.builder().name("instance-id").values(instanceId).build())
+					.build();
+		} else {
+			return Optional.empty();
+		}
+
+		DescribeInstancesResponse response = ec2.describeInstances(request);
+
+		for (Reservation reservation : response.reservations()) {
+			fleetInstances.addAll(reservation.instances());
+		}
+		if (fleetInstances.size() == 1)
+			return Optional.of(fleetInstances.get(0));
+		else
+			return Optional.empty();
 
 	}
 
