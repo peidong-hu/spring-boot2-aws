@@ -34,7 +34,7 @@ public class Ec2ServiceImpl implements Ec2Service {
 	public static final String MULTI_ATTACH_TAG_NAME = "multiVolAttach";
 	public static final String DEVICE_NAME = "/dev/sdf";
 	public static final String FLEET_TAG_NAME = "aws:ec2:fleet-id";
-	public static final int VOLUME_JOB_TRIGGER_THRESHOLD = 4;
+	public static final int VOLUME_JOB_TRIGGER_THRESHOLD = 1;
 
 	@Autowired
 	private Ec2Client ec2;
@@ -88,19 +88,21 @@ public class Ec2ServiceImpl implements Ec2Service {
 //			fleetInstances.forEach(ins -> {
 //				System.out.println(ins.instanceId());
 //			});
-			//TODO to save resources, I am using 3 instead of 16 as the bucket size to run the demo
+			//TODO the problem description doesn't address what to do with the volume size difference from user input in the case that instances out of the 16 size of 
+			//attach bucket for a specific call. It will leaves some instances with no volumes for example for the 17th instance because each call could have different 
+			//volume size requirement. Use 1 as the bucket size will avoid this for demo purpose.
 			if (fleetInstances.size() >= VOLUME_JOB_TRIGGER_THRESHOLD) {
 				//TODO I have no MultiAttachedVolume suported AZ in my account, I will just use regular volume to demo the code
 				//String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
-				for (int index = 0; index < fleetInstances.size(); index++) {
+				for (int index = 0; index < VOLUME_JOB_TRIGGER_THRESHOLD; index++) {
 					Instance inst = fleetInstances.get(index);
-					if (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1) {
+					//if (inst.tags().stream().filter(tag->tag.value().equals(muiltiAttachUUID)).count()==1) {
 						String volId = this.createMultiAttachVolume((String) az, volSize == 0 ? DEFAULT_VOL_SIZE : volSize);
 						
 						if (isVolumeAvailable(volId) && attachMultiAttachVolume(volId, fleetInstances.get(index))) {
 							successAttachRequestedInstances.add(fleetInstances.get(index));
 						}
-					}
+					//}
 				}
 			}
 		});
