@@ -3,6 +3,9 @@ server:
   servlet:
     context-path: /spring-boot2
 spring:
+  batch:
+    job:
+      enabled: false
   datasource:
     platform: H2
     name: boot2-demo

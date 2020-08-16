@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.its.model.FleetParam;
 import org.its.service.FleetService;
+import org.its.service.impl.FleetParamValidationServiceImpl;
 import org.its.service.impl.FleetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,9 +71,17 @@ public class FleetController {
 	public static List<FleetState> fleets = new ArrayList<FleetState>();
 	@Autowired
 	private FleetService fleetService;
+	
+	@Autowired
+	private FleetParamValidationServiceImpl validateService;
 
 	@PostMapping
 	public ResponseEntity<String> provision(@Valid @RequestBody FleetParam fleetParam) {
+		List<String> validateResults = validateService.validate(fleetParam);
+		if (! validateResults.isEmpty()) {
+			return ResponseEntity.badRequest().header("Content-Type", "text/html")
+					.body(validateResults.stream().collect(Collectors.joining("\n")));
+		}
 		UUID fleetUUID = UUID.randomUUID();
 		String fleetTerraformFolder = "/tmp/terra/" + fleetUUID + "/";
 		Path sourceDirectory = Paths.get(FleetServiceImpl.TERRAFORM_TEMPLATE_FOLDER);

@@ -23,7 +23,7 @@ public class Processor implements ItemProcessor<List<FleetState>, List<FleetStat
 							ec2Service.attachVolumeToUnattachedFleetInstances(fs.getFleetParam().getVolSize(),
 									fs.getFleetUUID().toString()).stream().map(inst->inst.instanceId()).collect(Collectors.toList()));
 				});
-
+		System.out.println("one process");
 		return fleetStates;
 	}
 

@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan("org.its.*")
 //@EnableAutoConfiguration
 @EnableBatchProcessing
+@EnableScheduling
 public class SpringRestApplication {
 
 	public static void main(String[] args) {
