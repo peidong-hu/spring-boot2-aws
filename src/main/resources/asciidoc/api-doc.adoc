@@ -1,11 +1,11 @@
 :title-logo-image: images/cover.jpg
 
-= Boot 2 Example
+= AWS Fleet Instances
 
 
 [[_overview]]
 == Overview
-A rest API example with Spring Boot 2 Features!
+A rest API for provision aws fleet spot and ondeman instances!
 
 
 === Version information
@@ -21,9 +21,9 @@ __Version__ : 0.1
 
 === Tags
 
-* ec-2-controller : Ec 2 Controller
-* fleet-controller : Fleet Controller
-* home-controller : Home Controller
+* aws-fleet-controller : Aws Fleet Controller
+* aws-instance-controller : Aws Instance Controller
+* greeting-controller : Greeting Controller
 
 
 
@@ -31,131 +31,15 @@ __Version__ : 0.1
 [[_paths]]
 == Resources
 
-[[_ec-2-controller_resource]]
-=== Ec-2-controller
-Ec 2 Controller
-
-
-[[_getallfleetinstancesusingget]]
-==== getAllFleetInstances
-....
-GET /ec2FleetInstances
-....
-
-
-===== Responses
-
-[options="header", cols=".^2,.^14,.^4"]
-|===
-|HTTP Code|Description|Schema
-|**200**|OK|< string > array
-|**401**|Unauthorized|No Content
-|**403**|Forbidden|No Content
-|**404**|Not Found|No Content
-|===
-
-
-
-
-
-
-
-
-
-
-
-
-===== Example HTTP request
-
-====== Request path
-----
-/ec2FleetInstances
-----
-
-
-===== Example HTTP response
-
-====== Response 200
-[source,json]
-----
-[ "string" ]
-----
-
-
-[[_attachmultiattachvolumetofleetinstancesusingget]]
-==== attachMultiAttachVolumeToFleetInstances
-....
-GET /ec2FleetInstances/attach
-....
-
-
-===== Parameters
-
-[options="header", cols=".^2,.^3,.^9,.^4"]
-|===
-|Type|Name|Description|Schema
-|**Query**|**volSize** +
-__optional__|volSize|integer (int32)
-|===
-
-
-===== Responses
-
-[options="header", cols=".^2,.^14,.^4"]
-|===
-|HTTP Code|Description|Schema
-|**200**|OK|< string > array
-|**401**|Unauthorized|No Content
-|**403**|Forbidden|No Content
-|**404**|Not Found|No Content
-|===
-
-
-
-
-
-
-
-
-
-
-
-
-===== Example HTTP request
-
-====== Request path
-----
-/ec2FleetInstances/attach
-----
-
-
-====== Request query
-[source,json]
-----
-{
-  "volSize" : 0
-}
-----
-
-
-===== Example HTTP response
-
-====== Response 200
-[source,json]
-----
-[ "string" ]
-----
-
-
-[[_fleet-controller_resource]]
-=== Fleet-controller
-Fleet Controller
+[[_aws-fleet-controller_resource]]
+=== Aws-fleet-controller
+Aws Fleet Controller
 
 
 [[_provisionusingpost]]
 ==== provision
 ....
-POST /ec2Fleet
+POST /spring-boot2/fleet
 ....
 
 
@@ -164,6 +48,8 @@ POST /ec2Fleet
 [options="header", cols=".^2,.^3,.^9,.^4"]
 |===
 |Type|Name|Description|Schema
+|**Query**|**dryRun** +
+`__required__`|dryRun|boolean
 |**Body**|**fleetParam** +
 `__required__`|fleetParam|<<_fleetparam,FleetParam>>
 |===
@@ -196,7 +82,16 @@ POST /ec2Fleet
 
 ====== Request path
 ----
-/ec2Fleet
+/spring-boot2/fleet
+----
+
+
+====== Request query
+[source,json]
+----
+{
+  "dryRun" : true
+}
 ----
 
 
@@ -223,9 +118,284 @@ POST /ec2Fleet
 ----
 
 
-[[_home-controller_resource]]
-=== Home-controller
-Home Controller
+[[_getfleetstatususingget]]
+==== getFleetStatus
+....
+GET /spring-boot2/fleet/{fleetUUID}
+....
+
+
+===== Parameters
+
+[options="header", cols=".^2,.^3,.^9,.^4"]
+|===
+|Type|Name|Description|Schema
+|**Path**|**fleetUUID** +
+`__required__`|fleetUUID|string
+|===
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|< <<_fleetstate,FleetState>> > array
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/spring-boot2/fleet/string
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+[ {
+  "dryRun" : true,
+  "fleetParam" : {
+    "numberOfNodes" : 0,
+    "subnets" : [ "string" ],
+    "securityGroups" : [ "string" ],
+    "instanceType" : "string",
+    "volSize" : 0,
+    "amiId" : "string"
+  },
+  "fleetTerraformFolder" : "string",
+  "fleetUUID" : "string",
+  "instancesWithAttachedVolum" : [ "string" ]
+} ]
+----
+
+
+[[_getallrunningfleetinstancesusingget]]
+==== getAllRunningFleetInstances
+....
+GET /spring-boot2/fleet/{fleetUUID}/instanceIds
+....
+
+
+===== Parameters
+
+[options="header", cols=".^2,.^3,.^9,.^4"]
+|===
+|Type|Name|Description|Schema
+|**Path**|**fleetUUID** +
+`__required__`|fleetUUID|string
+|===
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|< string > array
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/spring-boot2/fleet/string/instanceIds
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+[ "string" ]
+----
+
+
+[[_getallfleetsusingget]]
+==== getAllFleets
+....
+GET /spring-boot2/fleets
+....
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|< <<_fleetstate,FleetState>> > array
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/spring-boot2/fleets
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+[ {
+  "dryRun" : true,
+  "fleetParam" : {
+    "numberOfNodes" : 0,
+    "subnets" : [ "string" ],
+    "securityGroups" : [ "string" ],
+    "instanceType" : "string",
+    "volSize" : 0,
+    "amiId" : "string"
+  },
+  "fleetTerraformFolder" : "string",
+  "fleetUUID" : "string",
+  "instancesWithAttachedVolum" : [ "string" ]
+} ]
+----
+
+
+[[_aws-instance-controller_resource]]
+=== Aws-instance-controller
+Aws Instance Controller
+
+
+[[_getinstanceusingget]]
+==== getInstance
+....
+GET /spring-boot2/instance/{instanceId}
+....
+
+
+===== Parameters
+
+[options="header", cols=".^2,.^3,.^9,.^4"]
+|===
+|Type|Name|Description|Schema
+|**Path**|**instanceId** +
+`__required__`|instanceId|string
+|===
+
+
+===== Responses
+
+[options="header", cols=".^2,.^14,.^4"]
+|===
+|HTTP Code|Description|Schema
+|**200**|OK|<<_instance,Instance>>
+|**401**|Unauthorized|No Content
+|**403**|Forbidden|No Content
+|**404**|Not Found|No Content
+|===
+
+
+
+
+
+
+
+
+
+
+
+
+===== Example HTTP request
+
+====== Request path
+----
+/spring-boot2/instance/string
+----
+
+
+===== Example HTTP response
+
+====== Response 200
+[source,json]
+----
+{
+  "architecture" : "string",
+  "capacityReservationId" : "string",
+  "clientToken" : "string",
+  "ebsOptimized" : true,
+  "enaSupport" : true,
+  "hypervisor" : "string",
+  "imageId" : "string",
+  "instanceId" : "string",
+  "instanceLifecycle" : "string",
+  "instanceType" : "string",
+  "kernelId" : "string",
+  "keyName" : "string",
+  "mountedNonRoot" : "string",
+  "outpostArn" : "string",
+  "platform" : "string",
+  "privateDnsName" : "string",
+  "privateIpAddress" : "string",
+  "publicDnsName" : "string",
+  "publicIpAddress" : "string",
+  "ramdiskId" : "string",
+  "rootDeviceName" : "string",
+  "rootDeviceType" : "string",
+  "spotInstanceRequestId" : "string",
+  "sriovNetSupport" : "string",
+  "state" : "string",
+  "stateTransitionReason" : "string",
+  "subnetId" : "string",
+  "virtualizationType" : "string",
+  "vpcId" : "string"
+}
+----
+
+
+[[_greeting-controller_resource]]
+=== Greeting-controller
+Greeting Controller
 
 
 [[_sayhellousingget]]
@@ -297,6 +467,92 @@ __optional__|**Example** : `[ "string" ]`|< string > array
 __optional__|**Example** : `[ "string" ]`|< string > array
 |**volSize** +
 __optional__|**Example** : `0`|integer (int32)
+|===
+
+
+[[_fleetstate]]
+=== FleetState
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**dryRun** +
+__optional__|**Example** : `true`|boolean
+|**fleetParam** +
+__optional__|**Example** : `"<<_fleetparam>>"`|<<_fleetparam,FleetParam>>
+|**fleetTerraformFolder** +
+__optional__|**Example** : `"string"`|string
+|**fleetUUID** +
+__optional__|**Example** : `"string"`|string
+|**instancesWithAttachedVolum** +
+__optional__|**Example** : `[ "string" ]`|< string > array
+|===
+
+
+[[_instance]]
+=== Instance
+
+[options="header", cols=".^3,.^11,.^4"]
+|===
+|Name|Description|Schema
+|**architecture** +
+__optional__|**Example** : `"string"`|string
+|**capacityReservationId** +
+__optional__|**Example** : `"string"`|string
+|**clientToken** +
+__optional__|**Example** : `"string"`|string
+|**ebsOptimized** +
+__optional__|**Example** : `true`|boolean
+|**enaSupport** +
+__optional__|**Example** : `true`|boolean
+|**hypervisor** +
+__optional__|**Example** : `"string"`|string
+|**imageId** +
+__optional__|**Example** : `"string"`|string
+|**instanceId** +
+__optional__|**Example** : `"string"`|string
+|**instanceLifecycle** +
+__optional__|**Example** : `"string"`|string
+|**instanceType** +
+__optional__|**Example** : `"string"`|string
+|**kernelId** +
+__optional__|**Example** : `"string"`|string
+|**keyName** +
+__optional__|**Example** : `"string"`|string
+|**mountedNonRoot** +
+__optional__|**Example** : `"string"`|string
+|**outpostArn** +
+__optional__|**Example** : `"string"`|string
+|**platform** +
+__optional__|**Example** : `"string"`|string
+|**privateDnsName** +
+__optional__|**Example** : `"string"`|string
+|**privateIpAddress** +
+__optional__|**Example** : `"string"`|string
+|**publicDnsName** +
+__optional__|**Example** : `"string"`|string
+|**publicIpAddress** +
+__optional__|**Example** : `"string"`|string
+|**ramdiskId** +
+__optional__|**Example** : `"string"`|string
+|**rootDeviceName** +
+__optional__|**Example** : `"string"`|string
+|**rootDeviceType** +
+__optional__|**Example** : `"string"`|string
+|**spotInstanceRequestId** +
+__optional__|**Example** : `"string"`|string
+|**sriovNetSupport** +
+__optional__|**Example** : `"string"`|string
+|**state** +
+__optional__|**Example** : `"string"`|string
+|**stateTransitionReason** +
+__optional__|**Example** : `"string"`|string
+|**subnetId** +
+__optional__|**Example** : `"string"`|string
+|**virtualizationType** +
+__optional__|**Example** : `"string"`|string
+|**vpcId** +
+__optional__|**Example** : `"string"`|string
 |===
 
 

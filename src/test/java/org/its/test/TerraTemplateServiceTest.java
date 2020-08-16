@@ -6,10 +6,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.its.SpringRestApplication;
+import org.its.config.SwaggerConfig;
 import org.its.service.impl.TerraTemplateServiceImpl;
-import org.testng.annotations.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+//import org.testng.annotations.Test;
+import org.junit.Test;
 
-@Test
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = { SpringRestApplication.class,
+		SwaggerConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TerraTemplateServiceTest {
 
 	@Test
@@ -41,7 +49,7 @@ class TerraTemplateServiceTest {
 //			  "amiId": "ami-007e9fbe81cfbf4fa"
 //			}
 		
-		ttsi.replaceVariables("/tmp/terra2/variables.tf", 20, subnets, securityGroups, Optional.of("eds"), null, Optional.of("abc"), UUID.randomUUID());
+		ttsi.replaceVariables("/tmp/terra3/variables.tf", 20, subnets, securityGroups, Optional.of("eds"), null, Optional.of("abc"), UUID.randomUUID());
 	}
 
 }
